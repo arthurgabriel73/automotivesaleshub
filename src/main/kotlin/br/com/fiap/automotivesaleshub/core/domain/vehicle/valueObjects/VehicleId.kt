@@ -1,0 +1,8 @@
+package br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects
+
+import java.util.*
+
+@JvmInline
+value class VehicleId(val id: UUID? = null) {
+    fun string() = id?.toString() ?: ""
+}
