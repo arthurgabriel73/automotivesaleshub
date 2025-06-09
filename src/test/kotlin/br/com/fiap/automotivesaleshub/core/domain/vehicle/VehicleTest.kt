@@ -5,8 +5,12 @@ import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import java.time.Instant
 import java.util.*
+import java.util.stream.Stream
 import kotlin.test.Test
 
 class VehicleTest {
@@ -99,7 +103,7 @@ class VehicleTest {
     }
 
     @Test
-    fun `should update status correctly and set updatedAt`() {
+    fun `should allow a valid status transition and set updatedAt`() {
         // Arrange
         val vehicle = Vehicle(vehicleId, specifications, plate, price, status, createdAt)
         val newStatus = VehicleStatus.PROCESSING
@@ -122,5 +126,51 @@ class VehicleTest {
 
         // Act & Assert
         assertThrows<InvalidVehicleStatusException> { vehicle.updateStatus(invalidStatus) }
+    }
+
+    @ParameterizedTest(name = "From {0} to {1} should be {2}")
+    @MethodSource("statusTransitions")
+    fun `should handle status transitions correctly`(
+        currentStatus: VehicleStatus,
+        newStatus: VehicleStatus,
+        expectedSuccess: Boolean,
+    ) {
+        // Arrange
+        val vehicle = Vehicle(vehicleId, specifications, plate, price, currentStatus, createdAt)
+
+        // Act & Assert
+        if (expectedSuccess) {
+            val updatedVehicle = vehicle.updateStatus(newStatus)
+            assertEquals(newStatus, updatedVehicle.status)
+        } else {
+            assertThrows<InvalidVehicleStatusException> { vehicle.updateStatus(newStatus) }
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun statusTransitions(): Stream<Arguments> {
+            return Stream.of(
+                // Valid transitions
+                Arguments.of(VehicleStatus.AVAILABLE, VehicleStatus.PROCESSING, true),
+                Arguments.of(VehicleStatus.AVAILABLE, VehicleStatus.UNAVAILABLE, true),
+                Arguments.of(VehicleStatus.PROCESSING, VehicleStatus.AVAILABLE, true),
+                Arguments.of(VehicleStatus.PROCESSING, VehicleStatus.UNAVAILABLE, true),
+                Arguments.of(VehicleStatus.PROCESSING, VehicleStatus.SOLD, true),
+                Arguments.of(VehicleStatus.UNAVAILABLE, VehicleStatus.AVAILABLE, true),
+
+                // Invalid transitions
+                Arguments.of(VehicleStatus.AVAILABLE, VehicleStatus.AVAILABLE, false),
+                Arguments.of(VehicleStatus.AVAILABLE, VehicleStatus.SOLD, false),
+                Arguments.of(VehicleStatus.PROCESSING, VehicleStatus.PROCESSING, false),
+                Arguments.of(VehicleStatus.SOLD, VehicleStatus.AVAILABLE, false),
+                Arguments.of(VehicleStatus.SOLD, VehicleStatus.PROCESSING, false),
+                Arguments.of(VehicleStatus.SOLD, VehicleStatus.SOLD, false),
+                Arguments.of(VehicleStatus.SOLD, VehicleStatus.UNAVAILABLE, false),
+                Arguments.of(VehicleStatus.UNAVAILABLE, VehicleStatus.PROCESSING, false),
+                Arguments.of(VehicleStatus.UNAVAILABLE, VehicleStatus.SOLD, false),
+                Arguments.of(VehicleStatus.UNAVAILABLE, VehicleStatus.UNAVAILABLE, false),
+            )
+        }
     }
 }
