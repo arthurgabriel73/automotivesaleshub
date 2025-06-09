@@ -1,11 +1,13 @@
 package br.com.fiap.automotivesaleshub.core.domain.vehicle
 
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.exceptions.InvalidVehicleStatusException
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.assertThrows
 import java.time.Instant
 import java.util.*
 import kotlin.test.Test
-import org.junit.jupiter.api.Assertions.*
 
 class VehicleTest {
 
@@ -110,5 +112,15 @@ class VehicleTest {
         assertEquals(newStatus, updatedVehicle.status)
         assertNotNull(updatedVehicle.updatedAt)
         assertTrue(updatedVehicle.updatedAt!!.isAfter(beforeUpdate))
+    }
+
+    @Test
+    fun `should throw exception for invalid status transition`() {
+        // Arrange
+        val vehicle = Vehicle(vehicleId, specifications, plate, price, status, createdAt)
+        val invalidStatus = VehicleStatus.SOLD
+
+        // Act & Assert
+        assertThrows<InvalidVehicleStatusException> { vehicle.updateStatus(invalidStatus) }
     }
 }
