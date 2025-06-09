@@ -56,7 +56,8 @@ class Vehicle(
             mapOf(
                 VehicleStatus.AVAILABLE to
                     setOf(VehicleStatus.PROCESSING, VehicleStatus.UNAVAILABLE),
-                VehicleStatus.PROCESSING to setOf(VehicleStatus.SOLD, VehicleStatus.UNAVAILABLE),
+                VehicleStatus.PROCESSING to
+                    setOf(VehicleStatus.SOLD, VehicleStatus.UNAVAILABLE, VehicleStatus.AVAILABLE),
                 VehicleStatus.UNAVAILABLE to setOf(VehicleStatus.AVAILABLE),
                 VehicleStatus.SOLD to emptySet(),
             )
