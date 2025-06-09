@@ -5,14 +5,15 @@ import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
 import java.time.Instant
 
 class Vehicle(
-    vehicleId: VehicleId = VehicleId(),
-    specifications: Specifications = Specifications(),
-    plate: Plate = Plate(),
-    price: Price = Price(),
-    status: VehicleStatus = VehicleStatus.AVAILABLE,
-    createdAt: Instant? = null,
+    val vehicleId: VehicleId,
+    specifications: Specifications,
+    plate: Plate,
+    price: Price,
+    status: VehicleStatus,
+    createdAt: Instant,
     updatedAt: Instant? = null,
 ) {
+
     var specifications = specifications
         private set
 
