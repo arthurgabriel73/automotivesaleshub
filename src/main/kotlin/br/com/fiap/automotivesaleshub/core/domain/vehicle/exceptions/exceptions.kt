@@ -1,6 +1,6 @@
 package br.com.fiap.automotivesaleshub.core.domain.vehicle.exceptions
 
-open class CustomException(
+open class DomainException(
     override val message: String? = null,
     override val cause: Throwable? = null,
 ) : Exception(message, cause)
@@ -8,9 +8,9 @@ open class CustomException(
 data class InvalidVehicleStatusException(
     override val message: String? = null,
     override val cause: Throwable? = null,
-) : CustomException(message, cause)
+) : DomainException(message, cause)
 
 data class InvalidPaymentStatusException(
     override val message: String? = null,
     override val cause: Throwable? = null,
-) : CustomException(message, cause)
+) : DomainException(message, cause)
