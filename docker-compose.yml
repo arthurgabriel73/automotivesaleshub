@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16.3
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: automotivesaleshub
+    ports:
+      - "5432:5432"
+
+#  automotivesaleshub:
+#    image: arthurgabriel73/automotivesaleshub:1.0
+#    depends_on:
+#      - postgres
+#    environment:
+#      DATASOURCE_URL: "postgres"
+#    ports:
+#      - "8080:8080"
