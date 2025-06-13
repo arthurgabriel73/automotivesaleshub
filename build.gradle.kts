@@ -32,6 +32,7 @@ dependencies {
     implementation("jakarta.inject:jakarta.inject-api:2.0.0")
     implementation("org.springframework.boot:spring-boot-starter-webflux:2.3.1.RELEASE")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    testImplementation("io.kotest:kotest-runner-junit5:5.0.0")
 }
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
