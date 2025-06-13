@@ -6,12 +6,26 @@ import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.PriceCurrency
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.VehicleStatus
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class RegisterVehicleUseCaseTest {
+
+    private lateinit var vehicleRepository: InMemoryVehicleRepository
+    private lateinit var vehicleSalesService: InMemoryVehicleSalesService
+    private lateinit var sut: RegisterVehicleUseCase
+
+    @BeforeEach
+    fun setUp() {
+        vehicleRepository = InMemoryVehicleRepository()
+        vehicleSalesService = InMemoryVehicleSalesService()
+        sut = RegisterVehicleUseCase(vehicleRepository, vehicleSalesService)
+    }
 
     val input: RegisterVehicleInput =
         RegisterVehicleInput(
@@ -30,8 +44,6 @@ class RegisterVehicleUseCaseTest {
 
     @Test
     fun `should register a vehicle successfully`() {
-        // Arrange
-        val (sut, vehicleRepository) = makeSut()
 
         // Act
         val output = sut.execute(input)
@@ -45,8 +57,6 @@ class RegisterVehicleUseCaseTest {
 
     @Test
     fun `should throw exception when registering vehicle with existing plate`() {
-        // Arrange
-        val (sut) = makeSut()
 
         // Act
         sut.execute(input)
@@ -56,32 +66,14 @@ class RegisterVehicleUseCaseTest {
     }
 
     @Test
-    fun `should save vehicle to sales service`() {
-        // Arrange
-        val (sut, _, vehicleSalesService) = makeSut()
+    fun `should save vehicle to sales service`(): Unit = runBlocking {
 
         // Act
         val output = sut.execute(input)
+        delay(100)
 
         // Assert
         assertNotNull(output.vehicleId.isNotEmpty())
         assertNotNull(vehicleSalesService.vehicles.find { it.plate.plate == input.plate })
-    }
-
-    data class SutComponents(
-        val sut: RegisterVehicleUseCase,
-        val vehicleRepository: InMemoryVehicleRepository,
-        val vehicleSalesService: InMemoryVehicleSalesService,
-    )
-
-    fun makeSut(): SutComponents {
-        val vehicleRepository = InMemoryVehicleRepository()
-        val vehicleSalesService = InMemoryVehicleSalesService()
-        val sut =
-            RegisterVehicleUseCase(
-                vehicleRepository = vehicleRepository,
-                vehicleSalesService = vehicleSalesService,
-            )
-        return SutComponents(sut, vehicleRepository, vehicleSalesService)
     }
 }

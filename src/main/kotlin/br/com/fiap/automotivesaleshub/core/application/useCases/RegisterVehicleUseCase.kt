@@ -8,15 +8,16 @@ import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.outpu
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
+import java.time.Instant
+import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.util.*
 
 class RegisterVehicleUseCase(
     val vehicleRepository: VehicleRepository,
     val vehicleSalesService: VehicleSalesService,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : RegisterVehicleDriverPort {
 
     override fun execute(input: RegisterVehicleInput): RegisterVehicleOutput {
@@ -54,7 +55,7 @@ class RegisterVehicleUseCase(
     }
 
     private fun saveVehicleToSalesService(vehicle: Vehicle) {
-        CoroutineScope(Dispatchers.IO).launch { vehicleSalesService.saveVehicle(vehicle) }
+        coroutineScope.launch { vehicleSalesService.saveVehicle(vehicle) }
     }
 
     private fun requitePlateIsAvailable(plate: String) {
