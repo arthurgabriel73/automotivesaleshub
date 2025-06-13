@@ -4,7 +4,7 @@ import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleRepos
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 
 class InMemoryVehicleRepository : VehicleRepository {
-    private val vehicles = mutableListOf<Vehicle>()
+    val vehicles = mutableListOf<Vehicle>()
 
     override fun create(vehicle: Vehicle): Vehicle {
         vehicles.add(vehicle)
