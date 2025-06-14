@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version "4.0.0-SNAPSHOT"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.1.0"
+    id("org.jetbrains.kotlinx.kover") version "0.9.1"
 }
 
 group = "br.com.fiap"
