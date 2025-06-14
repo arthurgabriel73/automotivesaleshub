@@ -1,4 +1,4 @@
-name: Run Unit Tests
+name: Run Unit And BDD Tests
 
 on:
   pull_request:
@@ -21,8 +21,8 @@ jobs:
 
       - name: Build and run tests
         run: |
-          ./gradlew build 
-          ./gradlew test
+          ./gradlew clean test
+          ./gradlew clean runBDDTests
 
       - name: Upload test results
         if: always()
