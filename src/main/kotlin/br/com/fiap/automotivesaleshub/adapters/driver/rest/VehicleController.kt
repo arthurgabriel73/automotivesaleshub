@@ -1,6 +1,6 @@
 package br.com.fiap.automotivesaleshub.adapters.driver.rest
 
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.RegisterVehicleDriverPort
+import br.com.fiap.automotivesaleshub.core.application.ports.driver.RegisterVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.RegisterVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.RegisterVehicleOutput
 import jakarta.transaction.Transactional

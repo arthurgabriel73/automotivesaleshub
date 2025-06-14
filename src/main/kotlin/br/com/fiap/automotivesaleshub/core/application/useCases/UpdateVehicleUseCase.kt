@@ -2,7 +2,7 @@ package br.com.fiap.automotivesaleshub.core.application.useCases
 
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleSalesService
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.UpdateVehicleDriverPort
+import br.com.fiap.automotivesaleshub.core.application.ports.driver.UpdateVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.UpdateVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.UpdateVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
