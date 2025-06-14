@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version "4.0.0-SNAPSHOT"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.1.0"
+    id("org.jetbrains.kotlinx.kover") version "0.9.1"
 }
 
 group = "br.com.fiap"
@@ -26,12 +27,19 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(kotlin("test"))
     runtimeOnly("org.postgresql:postgresql")
     implementation("jakarta.inject:jakarta.inject-api:2.0.0")
     implementation("org.springframework.boot:spring-boot-starter-webflux:2.3.1.RELEASE")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    testImplementation("io.kotest:kotest-runner-junit5:5.0.0")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter:1.17.3")
+    testImplementation("org.testcontainers:postgresql:1.17.3")
+    testImplementation("io.cucumber:cucumber-java:7.23.0")
+    testImplementation("io.cucumber:cucumber-spring:7.23.0")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.23.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-console-standalone:1.10.2")
 }
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
@@ -42,6 +50,33 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-tasks.withType<Test> { useJUnitPlatform() }
+tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging { events("skipped", "passed", "failed") }
+}
 
-tasks.test { useJUnitPlatform() }
+tasks.test {
+    useJUnitPlatform()
+    testLogging { events("skipped", "passed", "failed") }
+}
+
+tasks {
+    val runBDDTests by
+        registering(JavaExec::class) {
+            dependsOn(testClasses)
+            doFirst { println("Running parallel Cucumber tests") }
+            classpath = sourceSets["test"].runtimeClasspath
+            mainClass.set("org.junit.platform.console.ConsoleLauncher")
+            args("--include-engine", "cucumber")
+            args("--details", "tree")
+            args("--scan-classpath")
+
+            systemProperty("cucumber.execution.parallel.enabled", true)
+            systemProperty("cucumber.execution.parallel.config.strategy", "dynamic")
+            systemProperty(
+                "cucumber.plugin",
+                "pretty, summary, timeline:build/reports/timeline, html:build/reports/cucumber.html",
+            )
+            systemProperty("cucumber.publish.quiet", true)
+        }
+}
