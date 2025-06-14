@@ -1,8 +1,8 @@
 package br.com.fiap.automotivesaleshub.core.domain.payment.models
 
+import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
-import br.com.fiap.automotivesaleshub.core.domain.vehicle.exceptions.InvalidPaymentStatusException
 import java.time.Instant
 import java.util.*
 
