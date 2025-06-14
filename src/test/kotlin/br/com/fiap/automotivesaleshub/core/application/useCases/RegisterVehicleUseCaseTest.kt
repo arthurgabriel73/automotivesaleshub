@@ -59,10 +59,10 @@ class RegisterVehicleUseCaseTest {
     @Test
     fun `should throw exception when registering vehicle with existing plate`() {
 
-        // Act
+        // Arrange
         sut.execute(input)
 
-        // Assert
+        // Act & Assert
         assertThrows<VehicleIsAlreadyRegisteredException> { sut.execute(input) }
     }
 

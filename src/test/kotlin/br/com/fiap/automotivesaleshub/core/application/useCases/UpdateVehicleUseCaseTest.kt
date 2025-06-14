@@ -2,8 +2,10 @@ package br.com.fiap.automotivesaleshub.core.application.useCases
 
 import br.com.fiap.automotivesaleshub.adapters.driven.persistence.InMemoryVehicleRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.UpdateVehicleInput
+import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleNotFoundException
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.BeforeEach
@@ -84,5 +86,16 @@ class UpdateVehicleUseCaseTest {
         updatedVehicle.createdAt shouldBe existingVehicle.createdAt
         updatedVehicle.updatedAt shouldNotBe null
         updatedVehicle.updatedAt!!.isAfter(existingVehicle.createdAt) shouldBe true
+    }
+
+    @Test
+    fun `should throw VehicleNotFoundException when vehicle does not exist`() {
+        // Act & Assert
+        shouldThrow<VehicleNotFoundException> { sut.execute(input) }
+    }
+
+    @Test
+    fun `should throw VehicleIsAlreadyRegisteredException when updating with existing plate`() {
+        TODO()
     }
 }
