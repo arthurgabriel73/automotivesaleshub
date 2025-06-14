@@ -2,6 +2,7 @@ package br.com.fiap.automotivesaleshub.core.application.useCases
 
 import br.com.fiap.automotivesaleshub.adapters.driven.persistence.InMemoryVehicleRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.UpdateVehicleInput
+import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleNotFoundException
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
@@ -96,6 +97,29 @@ class UpdateVehicleUseCaseTest {
 
     @Test
     fun `should throw VehicleIsAlreadyRegisteredException when updating with existing plate`() {
-        TODO()
+        // Arrange
+        val anotherVehicle =
+            Vehicle(
+                vehicleId = VehicleId(UUID.randomUUID()),
+                specifications =
+                    Specifications(
+                        make = "Toyota",
+                        model = "Corolla",
+                        version = "XEI",
+                        yearFabrication = "2020",
+                        yearModel = "2021",
+                        kilometers = 10000,
+                        color = "Black",
+                    ),
+                plate = Plate(plate = "ABC-1B34"), // Same plate as input
+                price = Price(amount = 40000L, currency = PriceCurrency.BRL),
+                status = VehicleStatus.AVAILABLE,
+                createdAt = Instant.now(),
+            )
+        vehicleRepository.create(existingVehicle)
+        vehicleRepository.create(anotherVehicle)
+
+        // Act & Assert
+        shouldThrow<VehicleIsAlreadyRegisteredException> { sut.execute(input) }
     }
 }
