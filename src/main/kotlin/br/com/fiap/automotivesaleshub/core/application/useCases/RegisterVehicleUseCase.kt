@@ -8,11 +8,11 @@ import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.outpu
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
-import java.time.Instant
-import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.util.*
 
 class RegisterVehicleUseCase(
     val vehicleRepository: VehicleRepository,
@@ -21,11 +21,11 @@ class RegisterVehicleUseCase(
 ) : RegisterVehicleDriverPort {
 
     override fun execute(input: RegisterVehicleInput): RegisterVehicleOutput {
-        requitePlateIsAvailable(input.plate)
+        requirePlateIsAvailable(Plate(input.plate))
         val vehicle = createVehicle(input)
         val createdVehicle = vehicleRepository.create(vehicle)
         saveVehicleToSalesService(vehicle)
-        return RegisterVehicleOutput(createdVehicle.vehicleId.toString())
+        return RegisterVehicleOutput(createdVehicle.vehicleId.string())
     }
 
     private fun createVehicle(input: RegisterVehicleInput): Vehicle {
@@ -58,7 +58,7 @@ class RegisterVehicleUseCase(
         coroutineScope.launch { vehicleSalesService.saveVehicle(vehicle) }
     }
 
-    private fun requitePlateIsAvailable(plate: String) {
+    private fun requirePlateIsAvailable(plate: Plate) {
         val existingVehicle = vehicleRepository.findByPlate(plate)
         if (existingVehicle != null)
             throw VehicleIsAlreadyRegisteredException("Vehicle with plate $plate already exists.")

@@ -4,6 +4,7 @@ import br.com.fiap.automotivesaleshub.adapters.driven.api.InMemoryVehicleSalesSe
 import br.com.fiap.automotivesaleshub.adapters.driven.persistence.InMemoryVehicleRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.RegisterVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.Plate
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.PriceCurrency
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.VehicleStatus
 import kotlinx.coroutines.delay
@@ -50,7 +51,7 @@ class RegisterVehicleUseCaseTest {
 
         // Assert
         assertNotNull(output.vehicleId.isNotEmpty())
-        val vehicle = vehicleRepository.findByPlate(input.plate)
+        val vehicle = vehicleRepository.findByPlate(Plate(input.plate))
         assertNotNull(vehicle)
         assertEquals(input.plate, vehicle.plate.plate)
     }

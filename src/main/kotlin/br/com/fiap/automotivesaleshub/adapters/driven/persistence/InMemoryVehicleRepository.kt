@@ -2,6 +2,8 @@ package br.com.fiap.automotivesaleshub.adapters.driven.persistence
 
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleRepository
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.Plate
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.VehicleId
 
 class InMemoryVehicleRepository : VehicleRepository {
     val vehicles = mutableListOf<Vehicle>()
@@ -11,8 +13,12 @@ class InMemoryVehicleRepository : VehicleRepository {
         return toNewInstance(vehicle)
     }
 
-    override fun findByPlate(plate: String): Vehicle? {
-        return toNewInstance(vehicles.find { it.plate.plate == plate } ?: return null)
+    override fun findById(vehicleId: VehicleId): Vehicle? {
+        return vehicles.find { it.vehicleId.id == vehicleId.id }?.let { toNewInstance(it) }
+    }
+
+    override fun findByPlate(plate: Plate): Vehicle? {
+        return toNewInstance(vehicles.find { it.plate == plate } ?: return null)
     }
 
     override fun update(vehicle: Vehicle): Vehicle {
