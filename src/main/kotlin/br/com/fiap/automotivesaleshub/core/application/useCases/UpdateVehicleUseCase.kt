@@ -1,6 +1,7 @@
 package br.com.fiap.automotivesaleshub.core.application.useCases
 
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleRepository
+import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleSalesService
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.UpdateVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.UpdateVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.UpdateVehicleOutput
@@ -14,7 +15,10 @@ import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.VehicleId
 import java.time.Instant
 import java.util.*
 
-class UpdateVehicleUseCase(val vehicleRepository: VehicleRepository) : UpdateVehicleDriverPort {
+class UpdateVehicleUseCase(
+    val vehicleRepository: VehicleRepository,
+    val vehicleSalesService: VehicleSalesService,
+) : UpdateVehicleDriverPort {
 
     override fun execute(input: UpdateVehicleInput): UpdateVehicleOutput {
         val existingVehicle = getVehicleOrFail(input.vehicleId)

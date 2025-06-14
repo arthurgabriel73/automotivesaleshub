@@ -1,5 +1,6 @@
 package br.com.fiap.automotivesaleshub.core.application.useCases
 
+import br.com.fiap.automotivesaleshub.adapters.driven.api.InMemoryVehicleSalesService
 import br.com.fiap.automotivesaleshub.adapters.driven.persistence.InMemoryVehicleRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.UpdateVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
@@ -9,6 +10,8 @@ import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import java.time.Instant
 import java.util.*
@@ -16,12 +19,14 @@ import kotlin.test.Test
 
 class UpdateVehicleUseCaseTest {
     private lateinit var vehicleRepository: InMemoryVehicleRepository
+    private lateinit var vehicleSalesService: InMemoryVehicleSalesService
     private lateinit var sut: UpdateVehicleUseCase
 
     @BeforeEach
     fun setUp() {
         vehicleRepository = InMemoryVehicleRepository()
-        sut = UpdateVehicleUseCase(vehicleRepository)
+        vehicleSalesService = InMemoryVehicleSalesService()
+        sut = UpdateVehicleUseCase(vehicleRepository, vehicleSalesService)
     }
 
     val existingVehicleId = VehicleId(UUID.randomUUID())
@@ -44,7 +49,7 @@ class UpdateVehicleUseCaseTest {
             createdAt = Instant.now(),
         )
 
-    val input: UpdateVehicleInput =
+    val updateVehicleInput: UpdateVehicleInput =
         UpdateVehicleInput(
             vehicleId = existingVehicleId.string(),
             make = "Fiat Updated",
@@ -66,24 +71,25 @@ class UpdateVehicleUseCaseTest {
         vehicleRepository.create(existingVehicle)
 
         // Act
-        val output = sut.execute(input)
+        val output = sut.execute(updateVehicleInput)
 
         // Assert
         assert(output.vehicleId.isNotEmpty())
-        val updatedVehicle = vehicleRepository.findById(VehicleId(UUID.fromString(input.vehicleId)))
+        val updatedVehicle =
+            vehicleRepository.findById(VehicleId(UUID.fromString(updateVehicleInput.vehicleId)))
         if (updatedVehicle == null) throw AssertionError("Updated vehicle should not be null")
         updatedVehicle shouldNotBe null
-        updatedVehicle.plate.plate shouldBe input.plate
-        updatedVehicle.specifications.make shouldBe input.make
-        updatedVehicle.specifications.model shouldBe input.model
-        updatedVehicle.specifications.version shouldBe input.version
-        updatedVehicle.specifications.yearFabrication shouldBe input.yearFabrication
-        updatedVehicle.specifications.yearModel shouldBe input.yearModel
-        updatedVehicle.specifications.kilometers shouldBe input.kilometers
-        updatedVehicle.specifications.color shouldBe input.color
-        updatedVehicle.price.amount shouldBe input.price
-        updatedVehicle.price.currency shouldBe input.priceCurrency
-        updatedVehicle.status shouldBe input.status
+        updatedVehicle.plate.plate shouldBe updateVehicleInput.plate
+        updatedVehicle.specifications.make shouldBe updateVehicleInput.make
+        updatedVehicle.specifications.model shouldBe updateVehicleInput.model
+        updatedVehicle.specifications.version shouldBe updateVehicleInput.version
+        updatedVehicle.specifications.yearFabrication shouldBe updateVehicleInput.yearFabrication
+        updatedVehicle.specifications.yearModel shouldBe updateVehicleInput.yearModel
+        updatedVehicle.specifications.kilometers shouldBe updateVehicleInput.kilometers
+        updatedVehicle.specifications.color shouldBe updateVehicleInput.color
+        updatedVehicle.price.amount shouldBe updateVehicleInput.price
+        updatedVehicle.price.currency shouldBe updateVehicleInput.priceCurrency
+        updatedVehicle.status shouldBe updateVehicleInput.status
         updatedVehicle.createdAt shouldBe existingVehicle.createdAt
         updatedVehicle.updatedAt shouldNotBe null
         updatedVehicle.updatedAt!!.isAfter(existingVehicle.createdAt) shouldBe true
@@ -92,7 +98,7 @@ class UpdateVehicleUseCaseTest {
     @Test
     fun `should throw VehicleNotFoundException when vehicle does not exist`() {
         // Act & Assert
-        shouldThrow<VehicleNotFoundException> { sut.execute(input) }
+        shouldThrow<VehicleNotFoundException> { sut.execute(updateVehicleInput) }
     }
 
     @Test
@@ -120,6 +126,24 @@ class UpdateVehicleUseCaseTest {
         vehicleRepository.create(anotherVehicle)
 
         // Act & Assert
-        shouldThrow<VehicleIsAlreadyRegisteredException> { sut.execute(input) }
+        shouldThrow<VehicleIsAlreadyRegisteredException> { sut.execute(updateVehicleInput) }
+    }
+
+    @Test
+    fun `should send vehicle changes to sales service`(): Unit = runBlocking {
+        // Arrange
+        vehicleRepository.create(existingVehicle)
+
+        // Act
+        val output = sut.execute(updateVehicleInput)
+        delay(100) // Wait for async operation to complete
+
+        // Assert
+        val vehicleDataOnSalesService =
+            vehicleSalesService.vehicles.find { it.vehicleId == existingVehicleId }
+        if (vehicleDataOnSalesService == null)
+            throw AssertionError("Vehicle should not be null in sales service")
+        output.vehicleId shouldNotBe null
+        vehicleDataOnSalesService.plate.plate shouldBe updateVehicleInput.plate
     }
 }

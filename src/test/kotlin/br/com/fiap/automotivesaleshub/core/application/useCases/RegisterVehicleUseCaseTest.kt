@@ -68,10 +68,9 @@ class RegisterVehicleUseCaseTest {
 
     @Test
     fun `should save vehicle to sales service`(): Unit = runBlocking {
-
         // Act
         val output = sut.execute(input)
-        delay(100)
+        delay(100) // Wait for async operation to complete
 
         // Assert
         assertNotNull(output.vehicleId.isNotEmpty())
