@@ -26,7 +26,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(kotlin("test"))
     runtimeOnly("org.postgresql:postgresql")
     implementation("jakarta.inject:jakarta.inject-api:2.0.0")
@@ -36,6 +35,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter:1.17.3")
     testImplementation("org.testcontainers:postgresql:1.17.3")
+    testImplementation("io.cucumber:cucumber-java:7.23.0")
+    testImplementation("io.cucumber:cucumber-spring:7.23.0")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.23.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-console-standalone:1.10.2")
 }
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
@@ -48,10 +51,36 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    testLogging { events("passed", "skipped", "failed") }
+    testLogging { events("skipped", "passed", "failed") }
 }
 
 tasks.test {
     useJUnitPlatform()
-    testLogging { events("passed", "skipped", "failed") }
+    testLogging { events("skipped", "passed", "failed") }
+}
+
+tasks {
+    val consoleLauncherTest by
+        registering(JavaExec::class) {
+            dependsOn(testClasses)
+            doFirst { println("Running parallel test") }
+            classpath = sourceSets["test"].runtimeClasspath
+            mainClass.set("org.junit.platform.console.ConsoleLauncher")
+            args("--include-engine", "cucumber")
+            args("--details", "tree")
+            args("--scan-classpath")
+
+            systemProperty("cucumber.execution.parallel.enabled", true)
+            systemProperty("cucumber.execution.parallel.config.strategy", "dynamic")
+            systemProperty(
+                "cucumber.plugin",
+                "pretty, summary, timeline:build/reports/timeline, html:build/reports/cucumber.html",
+            )
+            systemProperty("cucumber.publish.quiet", true)
+        }
+
+    test {
+        dependsOn(consoleLauncherTest)
+        exclude("**/*")
+    }
 }

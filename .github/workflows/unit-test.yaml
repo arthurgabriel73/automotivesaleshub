@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and run tests
         run: |
-          ./gradlew  build 
+          ./gradlew build 
           ./gradlew test
 
       - name: Upload test results
