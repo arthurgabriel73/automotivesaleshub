@@ -79,8 +79,5 @@ tasks {
             systemProperty("cucumber.publish.quiet", true)
         }
 
-    test {
-        dependsOn(consoleLauncherTest)
-        exclude("**/*")
-    }
+    test { dependsOn(consoleLauncherTest) }
 }
