@@ -60,10 +60,10 @@ tasks.test {
 }
 
 tasks {
-    val consoleLauncherTest by
+    val runBDDTests by
         registering(JavaExec::class) {
             dependsOn(testClasses)
-            doFirst { println("Running parallel test") }
+            doFirst { println("Running parallel Cucumber tests") }
             classpath = sourceSets["test"].runtimeClasspath
             mainClass.set("org.junit.platform.console.ConsoleLauncher")
             args("--include-engine", "cucumber")
@@ -78,6 +78,4 @@ tasks {
             )
             systemProperty("cucumber.publish.quiet", true)
         }
-
-    test { dependsOn(consoleLauncherTest) }
 }
