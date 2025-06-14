@@ -1,6 +1,7 @@
 package br.com.fiap.automotivesaleshub.adapters.driven.api
 
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.SaveVehicleRequest
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.UpdateVehicleRequest
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleSalesService
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 import jakarta.inject.Named
@@ -14,6 +15,6 @@ class VehicleSalesServiceGateway(private val vehicleSalesServiceApi: VehicleSale
     }
 
     override suspend fun updateVehicle(vehicle: Vehicle) {
-        TODO()
+        vehicleSalesServiceApi.updateVehicle(UpdateVehicleRequest(vehicle))
     }
 }

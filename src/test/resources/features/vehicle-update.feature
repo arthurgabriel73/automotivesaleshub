@@ -16,6 +16,7 @@ Feature: Vehicle Update
     Then the system should reject the vehicle update with a bad request error
 
   Scenario: Fail to update a non-existent vehicle
-    Given the admin has not registered a vehicle in the system
+    Given the admin have registered a vehicle in the system
+    And the admin has a vehicle update form for a non-existent vehicle
     When the admin submits the vehicle update form
     Then the system should reject the vehicle update with a not found error
