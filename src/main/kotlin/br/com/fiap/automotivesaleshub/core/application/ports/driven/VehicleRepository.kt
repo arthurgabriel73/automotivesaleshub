@@ -6,4 +6,6 @@ interface VehicleRepository {
     fun create(vehicle: Vehicle): Vehicle
 
     fun findByPlate(plate: String): Vehicle?
+
+    fun update(vehicle: Vehicle): Vehicle
 }

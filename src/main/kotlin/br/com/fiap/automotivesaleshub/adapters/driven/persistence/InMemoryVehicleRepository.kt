@@ -15,6 +15,14 @@ class InMemoryVehicleRepository : VehicleRepository {
         return toNewInstance(vehicles.find { it.plate.plate == plate } ?: return null)
     }
 
+    override fun update(vehicle: Vehicle): Vehicle {
+        val index = vehicles.indexOfFirst { it.vehicleId == vehicle.vehicleId }
+        if (index == -1)
+            throw IllegalArgumentException("Vehicle with ID ${vehicle.vehicleId} not found")
+        vehicles[index] = toNewInstance(vehicle)
+        return toNewInstance(vehicles[index])
+    }
+
     private fun toNewInstance(vehicle: Vehicle): Vehicle {
         return Vehicle(
             vehicleId = vehicle.vehicleId,
