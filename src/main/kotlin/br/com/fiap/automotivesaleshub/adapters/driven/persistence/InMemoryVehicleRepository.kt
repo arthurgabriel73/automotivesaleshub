@@ -9,7 +9,7 @@ class InMemoryVehicleRepository : VehicleRepository {
     val vehicles = mutableListOf<Vehicle>()
 
     override fun create(vehicle: Vehicle): Vehicle {
-        vehicles.add(vehicle)
+        vehicles.add(toNewInstance(vehicle))
         return toNewInstance(vehicle)
     }
 

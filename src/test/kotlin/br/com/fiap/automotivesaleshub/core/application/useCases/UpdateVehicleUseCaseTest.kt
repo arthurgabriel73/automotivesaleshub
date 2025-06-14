@@ -133,17 +133,18 @@ class UpdateVehicleUseCaseTest {
     fun `should send vehicle changes to sales service`(): Unit = runBlocking {
         // Arrange
         vehicleRepository.create(existingVehicle)
+        vehicleSalesService.saveVehicle(existingVehicle)
 
         // Act
         val output = sut.execute(updateVehicleInput)
         delay(100) // Wait for async operation to complete
 
         // Assert
-        val vehicleDataOnSalesService =
+        val vehicleFromSalesService =
             vehicleSalesService.vehicles.find { it.vehicleId == existingVehicleId }
-        if (vehicleDataOnSalesService == null)
+        if (vehicleFromSalesService == null)
             throw AssertionError("Vehicle should not be null in sales service")
         output.vehicleId shouldNotBe null
-        vehicleDataOnSalesService.plate.plate shouldBe updateVehicleInput.plate
+        vehicleFromSalesService.plate.plate shouldBe updateVehicleInput.plate
     }
 }

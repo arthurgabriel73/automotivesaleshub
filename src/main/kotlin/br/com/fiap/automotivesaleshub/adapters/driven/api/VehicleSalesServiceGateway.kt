@@ -12,4 +12,8 @@ class VehicleSalesServiceGateway(private val vehicleSalesServiceApi: VehicleSale
     override suspend fun saveVehicle(vehicle: Vehicle) {
         vehicleSalesServiceApi.saveVehicle(SaveVehicleRequest(vehicle))
     }
+
+    override suspend fun updateVehicle(vehicle: Vehicle) {
+        TODO()
+    }
 }

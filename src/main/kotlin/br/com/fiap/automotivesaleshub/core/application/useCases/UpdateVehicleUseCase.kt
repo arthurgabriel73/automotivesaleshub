@@ -12,12 +12,16 @@ import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.Plate
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.Price
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.Specifications
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.VehicleId
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.util.*
 
 class UpdateVehicleUseCase(
     val vehicleRepository: VehicleRepository,
     val vehicleSalesService: VehicleSalesService,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : UpdateVehicleDriverPort {
 
     override fun execute(input: UpdateVehicleInput): UpdateVehicleOutput {
@@ -43,6 +47,7 @@ class UpdateVehicleUseCase(
                 updatedAt = Instant.now(),
             )
         val updatedVehicle = vehicleRepository.update(vehicleToUpdate)
+        updateVehicleOnSalesService(updatedVehicle)
         return UpdateVehicleOutput(updatedVehicle.vehicleId.toString())
     }
 
@@ -62,5 +67,9 @@ class UpdateVehicleUseCase(
             throw VehicleIsAlreadyRegisteredException(
                 "Update Failed: Another vehicle with plate $plate is already registered."
             )
+    }
+
+    private fun updateVehicleOnSalesService(vehicle: Vehicle) {
+        coroutineScope.launch { vehicleSalesService.updateVehicle(vehicle) }
     }
 }
