@@ -18,11 +18,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Build and run tests
         run: |
-          ./gradlew clean test
-          ./gradlew clean runBDDTests
+          ./gradlew clean test --no-daemon
+          ./gradlew clean runBDDTests --no-daemon
 
       - name: Upload test results
         if: always()
