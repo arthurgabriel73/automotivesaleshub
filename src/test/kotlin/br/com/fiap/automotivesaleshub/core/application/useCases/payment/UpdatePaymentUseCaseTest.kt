@@ -45,7 +45,7 @@ class UpdatePaymentUseCaseTest {
         sut.execute(updatePaymentInput)
 
         // Assert
-        val payment = paymentRepository.getByOrder(existingPayment.order)
+        val payment = paymentRepository.findByOrder(existingPayment.order)
         if (payment == null) throw AssertionError("Updated payment should not be null")
         payment shouldNotBe null
         payment.paymentId shouldBe existingPayment.paymentId

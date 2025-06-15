@@ -24,7 +24,7 @@ class UpdatePaymentUseCase(val paymentRepository: PaymentRepository) : UpdatePay
     }
 
     private fun getPaymentOrFail(order: String): Payment {
-        val payment = paymentRepository.getByOrder(UUID.fromString(order))
+        val payment = paymentRepository.findByOrder(UUID.fromString(order))
         if (payment == null) throw PaymentNotFoundException("Payment not found for order: $order.")
         return payment
     }
