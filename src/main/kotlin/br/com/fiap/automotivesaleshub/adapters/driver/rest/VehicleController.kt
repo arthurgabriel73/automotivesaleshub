@@ -34,6 +34,7 @@ class VehicleController(
         @PathVariable(name = "vehicleId", required = true) vehicleId: String,
         @Validated @RequestBody input: UpdateVehicleInput,
     ): UpdateVehicleOutput {
+        // TODO: get ID from path variable only
         return updateVehicleDriverPort.execute(input)
     }
 }
