@@ -1,5 +1,6 @@
 package br.com.fiap.automotivesaleshub.core.domain.vehicle
 
+import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
@@ -51,6 +52,6 @@ class PaymentTest {
         payment.updateStatus(PaymentStatus.APPROVED)
 
         // Act & Assert
-        shouldThrow<Exception> { payment.updateStatus(PaymentStatus.PENDING) }
+        shouldThrow<InvalidPaymentStatusException> { payment.updateStatus(PaymentStatus.PENDING) }
     }
 }
