@@ -1,11 +1,16 @@
 package br.com.fiap.automotivesaleshub.configuration.ioc
 
+import br.com.fiap.automotivesaleshub.adapters.driver.webhook.UpdatePaymentRequestAdapter
+import br.com.fiap.automotivesaleshub.adapters.driver.webhook.adapters.MercadoPagoAdapter
+import br.com.fiap.automotivesaleshub.core.application.ports.driven.PaymentRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleSalesService
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.RegisterVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.UpdateVehicleDriverPort
+import br.com.fiap.automotivesaleshub.core.application.ports.payment.driver.UpdatePaymentDriverPort
 import br.com.fiap.automotivesaleshub.core.application.useCases.RegisterVehicleUseCase
 import br.com.fiap.automotivesaleshub.core.application.useCases.UpdateVehicleUseCase
+import br.com.fiap.automotivesaleshub.core.application.useCases.payment.UpdatePaymentUseCase
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -25,5 +30,15 @@ class UseCasesBeanConfiguration {
         vehicleSalesService: VehicleSalesService,
     ): UpdateVehicleDriverPort {
         return UpdateVehicleUseCase(vehicleRepository, vehicleSalesService)
+    }
+
+    @Bean
+    fun updatePaymentUseCase(paymentRepository: PaymentRepository): UpdatePaymentDriverPort {
+        return UpdatePaymentUseCase(paymentRepository)
+    }
+
+    @Bean
+    fun updatePaymentRequestAdapter(): UpdatePaymentRequestAdapter {
+        return MercadoPagoAdapter()
     }
 }
