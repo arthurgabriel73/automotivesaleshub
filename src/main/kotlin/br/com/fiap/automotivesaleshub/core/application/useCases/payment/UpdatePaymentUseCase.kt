@@ -5,6 +5,7 @@ import br.com.fiap.automotivesaleshub.core.application.ports.payment.driver.Upda
 import br.com.fiap.automotivesaleshub.core.application.ports.payment.driver.models.input.UpdatePaymentInput
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.PaymentNotFoundException
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
+import java.time.Instant
 import java.util.*
 
 class UpdatePaymentUseCase(val paymentRepository: PaymentRepository) : UpdatePaymentDriverPort {
@@ -16,7 +17,7 @@ class UpdatePaymentUseCase(val paymentRepository: PaymentRepository) : UpdatePay
                 status = input.status,
                 order = existingPayment.order,
                 createdAt = existingPayment.createdAt,
-                updatedAt = existingPayment.updatedAt,
+                updatedAt = Instant.now(),
             )
         paymentRepository.update(paymentToUpdate)
     }
