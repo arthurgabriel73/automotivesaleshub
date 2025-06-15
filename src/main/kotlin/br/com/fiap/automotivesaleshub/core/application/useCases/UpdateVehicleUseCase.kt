@@ -27,7 +27,7 @@ class UpdateVehicleUseCase(
     override fun execute(input: UpdateVehicleInput): UpdateVehicleOutput {
         val existingVehicle = getVehicleOrFail(input.vehicleId)
         requirePlateIsAvailable(input.vehicleId, input.plate)
-        // TODO: use domain model update methods to ensure encapsulation
+        // TODO: use domain model update methods to ensure 'Tell, don't ask!'
         val vehicleToUpdate =
             Vehicle(
                 vehicleId = existingVehicle.vehicleId,

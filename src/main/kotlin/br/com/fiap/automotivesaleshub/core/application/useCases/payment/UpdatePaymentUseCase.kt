@@ -11,6 +11,7 @@ import java.util.*
 class UpdatePaymentUseCase(val paymentRepository: PaymentRepository) : UpdatePaymentDriverPort {
     override fun execute(input: UpdatePaymentInput) {
         val existingPayment = getPaymentOrFail(input.order)
+        // TODO: use domain model update methods to ensure 'Tell, don't ask!'
         val paymentToUpdate =
             Payment(
                 paymentId = existingPayment.paymentId,
