@@ -29,10 +29,11 @@ class Payment(
         private set
 
     @Throws(InvalidPaymentStatusException::class)
-    fun updateStatus(newStatus: PaymentStatus) {
+    fun updateStatus(newStatus: PaymentStatus): Payment {
         if (status != PaymentStatus.PENDING)
             throw InvalidPaymentStatusException("Status $status is not PENDING")
         status = newStatus
         updatedAt = Instant.now()
+        return this
     }
 }
