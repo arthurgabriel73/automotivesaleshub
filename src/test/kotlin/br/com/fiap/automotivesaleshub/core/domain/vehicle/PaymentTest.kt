@@ -3,6 +3,7 @@ package br.com.fiap.automotivesaleshub.core.domain.vehicle
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -45,6 +46,11 @@ class PaymentTest {
 
     @Test
     fun `should throw exception for invalid status transition`() {
-        TODO()
+        // Arrange
+        val payment = Payment(paymentId, PaymentStatus.PENDING, order, createdAt)
+        payment.updateStatus(PaymentStatus.APPROVED)
+
+        // Act & Assert
+        shouldThrow<Exception> { payment.updateStatus(PaymentStatus.PENDING) }
     }
 }
