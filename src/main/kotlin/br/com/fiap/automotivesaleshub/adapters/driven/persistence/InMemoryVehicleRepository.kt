@@ -18,7 +18,7 @@ class InMemoryVehicleRepository : VehicleRepository {
     }
 
     override fun findByPlate(plate: Plate): Vehicle? {
-        return toNewInstance(vehicles.find { it.plate == plate } ?: return null)
+        return vehicles.find { it.plate.plate == plate.plate }?.let { toNewInstance(it) }
     }
 
     override fun update(vehicle: Vehicle): Vehicle {

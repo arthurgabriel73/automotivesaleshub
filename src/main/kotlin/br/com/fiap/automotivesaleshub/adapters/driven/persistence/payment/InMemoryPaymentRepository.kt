@@ -13,7 +13,7 @@ class InMemoryPaymentRepository : PaymentRepository {
     }
 
     override fun findByOrderId(orderId: OrderId): Payment? {
-        return toNewInstance(payments.find { it.orderId == orderId } ?: return null)
+        return payments.find { it.orderId == orderId }?.let { toNewInstance(it) }
     }
 
     override fun update(payment: Payment) {

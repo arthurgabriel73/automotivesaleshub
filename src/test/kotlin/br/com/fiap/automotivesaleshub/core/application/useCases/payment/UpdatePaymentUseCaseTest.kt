@@ -35,7 +35,7 @@ class UpdatePaymentUseCaseTest {
         )
 
     val updatePaymentInput: UpdatePaymentInput =
-        UpdatePaymentInput(existingOrder.toString(), PaymentStatus.APPROVED)
+        UpdatePaymentInput(existingOrder.string(), PaymentStatus.APPROVED)
 
     @Test
     fun `should update a payment successfully`() {
