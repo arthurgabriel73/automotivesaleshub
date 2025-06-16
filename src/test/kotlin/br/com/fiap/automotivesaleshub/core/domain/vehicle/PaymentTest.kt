@@ -2,6 +2,7 @@ package br.com.fiap.automotivesaleshub.core.domain.vehicle
 
 import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
+import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
 import io.kotest.assertions.throwables.shouldThrow
@@ -15,26 +16,26 @@ import kotlin.test.Test
 class PaymentTest {
 
     val paymentId = PaymentId(UUID.randomUUID())
-    val order: UUID = UUID.randomUUID()
+    val orderId = OrderId(UUID.randomUUID())
     val createdAt: Instant = Instant.now()
 
     @Test
     fun `should create a payment with correct fields`() {
         // Arrange & Act
-        val payment = Payment(paymentId, PaymentStatus.PENDING, order, createdAt)
+        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, createdAt)
 
         // Assert
         payment shouldNotBe null
         payment.paymentId shouldBe paymentId
         payment.status shouldBe PaymentStatus.PENDING
-        payment.order shouldBe order
+        payment.orderId shouldBe orderId
         payment.createdAt shouldBe createdAt
     }
 
     @Test
     fun `should update status correctly and set updatedAt`() {
         // Arrange
-        val payment = Payment(paymentId, PaymentStatus.PENDING, order, createdAt)
+        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, createdAt)
 
         // Act
         val updatedPayment = payment.updateStatus(PaymentStatus.APPROVED)
@@ -48,7 +49,7 @@ class PaymentTest {
     @Test
     fun `should throw exception for invalid status transition`() {
         // Arrange
-        val payment = Payment(paymentId, PaymentStatus.PENDING, order, createdAt)
+        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, createdAt)
         payment.updateStatus(PaymentStatus.APPROVED)
 
         // Act & Assert

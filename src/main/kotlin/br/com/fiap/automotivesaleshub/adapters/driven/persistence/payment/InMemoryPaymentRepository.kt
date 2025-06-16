@@ -2,7 +2,7 @@ package br.com.fiap.automotivesaleshub.adapters.driven.persistence.payment
 
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.PaymentRepository
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
-import java.util.*
+import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 
 class InMemoryPaymentRepository : PaymentRepository {
     val payments = mutableListOf<Payment>()
@@ -12,8 +12,8 @@ class InMemoryPaymentRepository : PaymentRepository {
         return toNewInstance(payment)
     }
 
-    override fun findByOrder(order: UUID): Payment? {
-        return toNewInstance(payments.find { it.order == order } ?: return null)
+    override fun findByOrderId(orderId: OrderId): Payment? {
+        return toNewInstance(payments.find { it.orderId == orderId } ?: return null)
     }
 
     override fun update(payment: Payment) {
@@ -27,7 +27,7 @@ class InMemoryPaymentRepository : PaymentRepository {
         return Payment(
             paymentId = payment.paymentId,
             status = payment.status,
-            order = payment.order,
+            orderId = payment.orderId,
             createdAt = payment.createdAt,
             updatedAt = payment.updatedAt,
         )

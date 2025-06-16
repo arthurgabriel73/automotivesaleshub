@@ -1,15 +1,15 @@
 package br.com.fiap.automotivesaleshub.core.domain.payment.models
 
 import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
+import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
 import java.time.Instant
-import java.util.*
 
 class Payment(
-    paymentId: PaymentId = PaymentId(),
+    paymentId: PaymentId,
     status: PaymentStatus = PaymentStatus.PENDING,
-    order: UUID,
+    orderId: OrderId,
     createdAt: Instant? = null,
     updatedAt: Instant? = null,
 ) {
@@ -19,7 +19,7 @@ class Payment(
     var status = status
         private set
 
-    var order = order
+    var orderId = orderId
         private set
 
     var createdAt = createdAt

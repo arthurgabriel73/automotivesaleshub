@@ -3,6 +3,7 @@ package br.com.fiap.automotivesaleshub.configuration
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.PaymentNotFoundException
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleNotFoundException
+import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -34,6 +35,14 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
         exception: PaymentNotFoundException
     ): ResponseEntity<ErrorMessage> {
         val errorMessage = ErrorMessage(status = HttpStatus.NOT_FOUND, error = exception.message)
+        return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
+    }
+
+    @ExceptionHandler(InvalidPaymentStatusException::class)
+    fun handleInvalidPaymentStatusException(
+        exception: InvalidPaymentStatusException
+    ): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(status = HttpStatus.BAD_REQUEST, error = exception.message)
         return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
     }
 }

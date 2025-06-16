@@ -11,7 +11,7 @@ Feature: Payment Update
 
   Scenario: Fail to update a payment with invalid data
     Given the system has a pending payment
-    And the external payment service attempts to update the payment status with invalid data
+    And the external payment service has an invalid form to update the payment status
     When the external payment service submits the payment update
     Then the system should reject the payment update with a bad request error
 

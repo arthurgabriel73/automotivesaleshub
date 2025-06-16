@@ -8,21 +8,21 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/v1/payments")
+@RequestMapping("/v1/webhook/payments")
 class PaymentWebhookController(
     private val updatePaymentDriverPort: UpdatePaymentDriverPort,
     private val updatePaymentRequestAdapter: UpdatePaymentRequestAdapter,
 ) {
 
-    @PostMapping("{order}")
+    @PostMapping("{orderId}")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
     fun updatePayment(
-        @PathVariable(name = "order", required = true) order: String,
+        @PathVariable(name = "orderId", required = true) orderId: String,
         @RequestBody request: UpdatePaymentRequest,
     ) {
         val paymentStatus = updatePaymentRequestAdapter.adapt(request)
-        val input = UpdatePaymentInput(order, paymentStatus)
+        val input = UpdatePaymentInput(orderId, paymentStatus)
         updatePaymentDriverPort.execute(input)
     }
 }

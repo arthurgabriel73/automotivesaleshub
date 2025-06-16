@@ -4,6 +4,7 @@ import br.com.fiap.automotivesaleshub.adapters.driven.persistence.payment.InMemo
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.PaymentRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.payment.driver.models.input.UpdatePaymentInput
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
+import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
 import io.kotest.matchers.shouldBe
@@ -23,13 +24,13 @@ class UpdatePaymentUseCaseTest {
         sut = UpdatePaymentUseCase(paymentRepository)
     }
 
-    val existingOrder: UUID = UUID.randomUUID()
+    val existingOrder = OrderId(UUID.randomUUID())
     val existingPaymentId = PaymentId(UUID.randomUUID())
     val existingPayment =
         Payment(
             paymentId = existingPaymentId,
             status = PaymentStatus.PENDING,
-            order = existingOrder,
+            orderId = existingOrder,
             createdAt = Instant.now(),
         )
 
@@ -45,12 +46,12 @@ class UpdatePaymentUseCaseTest {
         sut.execute(updatePaymentInput)
 
         // Assert
-        val payment = paymentRepository.findByOrder(existingPayment.order)
+        val payment = paymentRepository.findByOrderId(existingPayment.orderId)
         if (payment == null) throw AssertionError("Updated payment should not be null")
         payment shouldNotBe null
         payment.paymentId shouldBe existingPayment.paymentId
         payment.status shouldBe PaymentStatus.APPROVED
-        payment.order shouldBe existingOrder
+        payment.orderId shouldBe existingOrder
         payment.createdAt shouldBe existingPayment.createdAt
         payment.updatedAt shouldNotBe null
         payment.updatedAt!!.isAfter(existingPayment.createdAt)
