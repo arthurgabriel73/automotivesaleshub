@@ -61,7 +61,6 @@ class UpdateVehicleAcceptanceTest {
 
     @Given("the admin has a valid vehicle update form")
     fun `the admin has a valid vehicle update form`() {
-
         requestInput =
             mapOf(
                 "vehicleId" to vehicleId,
@@ -81,7 +80,6 @@ class UpdateVehicleAcceptanceTest {
 
     @When("the admin submits the vehicle update form")
     fun `the admin submits the vehicle update form`() {
-        print("URL: $vehiclesUrl/$vehicleId")
         response =
             testRestTemplate.exchange(
                 "$vehiclesUrl/$vehicleId",

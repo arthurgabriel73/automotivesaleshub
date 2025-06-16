@@ -14,3 +14,8 @@ data class VehicleNotFoundException(
     override val message: String = "Vehicle not found.",
     override val cause: Throwable? = null,
 ) : ApplicationException(message, cause)
+
+data class PaymentNotFoundException(
+    override val message: String = "Payment not found.",
+    override val cause: Throwable? = null,
+) : ApplicationException(message, cause)
