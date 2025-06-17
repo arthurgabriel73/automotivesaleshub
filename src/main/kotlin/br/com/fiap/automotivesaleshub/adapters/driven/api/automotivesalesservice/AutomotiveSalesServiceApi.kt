@@ -6,31 +6,34 @@ import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.UpdateVehi
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.SaveVehicleResponse
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.UpdateVehicleResponse
 import jakarta.inject.Named
-import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpMethod
+import org.springframework.web.client.RestTemplate
 
 @Named
-class AutomotiveSalesServiceApi(private val webClient: WebClient) : VehicleSalesServiceApi {
-    private val baseUrl = "http://automotive-sales-service"
+class AutomotiveSalesServiceApi() : VehicleSalesServiceApi {
+
+    private var restTemplate: RestTemplate = RestTemplate()
+
+    @Value("\${automotive.sales.service.url}") lateinit var baseUrl: String
 
     override suspend fun saveVehicle(request: SaveVehicleRequest): SaveVehicleResponse {
-        //        webClient
-        //            .post()
-        //            .uri("https://webhook.site/95dcf8ed-c274-457f-93bd-0c4aab465fe8")
-        //            .bodyValue(request.toString())
-        //            .retrieve()
-        //            .bodyToMono(String::class.java)
-        //            .block() ?: throw RuntimeException("Failed to save vehicle")
+        restTemplate.postForEntity(
+            "$baseUrl/vehicles",
+            HttpEntity(request.toMap()),
+            String::class.java,
+        )
         return SaveVehicleResponse(result = "Vehicle saved successfully")
     }
 
     override suspend fun updateVehicle(request: UpdateVehicleRequest): UpdateVehicleResponse {
-        //        webClient
-        //            .put()
-        //            .uri("https://webhook.site/95dcf8ed-c274-457f-93bd-0c4aab465fe8")
-        //            .bodyValue(request.toString())
-        //            .retrieve()
-        //            .bodyToMono(String::class.java)
-        //            .block() ?: throw RuntimeException("Failed to update vehicle")
+        restTemplate.exchange(
+            "$baseUrl/vehicles",
+            HttpMethod.PUT,
+            HttpEntity(request.toMap()),
+            String::class.java,
+        )
         return UpdateVehicleResponse(result = "Vehicle updated successfully")
     }
 }
