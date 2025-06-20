@@ -49,7 +49,7 @@ class UpdateVehicleUseCase(
             )
         val updatedVehicle = vehicleRepository.update(vehicleToUpdate)
         updateVehicleOnSalesService(updatedVehicle)
-        return UpdateVehicleOutput(updatedVehicle.vehicleId.toString())
+        return UpdateVehicleOutput(updatedVehicle.vehicleId.string())
     }
 
     private fun getVehicleOrFail(id: String): Vehicle {
