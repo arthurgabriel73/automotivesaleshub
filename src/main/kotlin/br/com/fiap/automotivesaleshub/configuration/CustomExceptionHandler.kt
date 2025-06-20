@@ -3,7 +3,9 @@ package br.com.fiap.automotivesaleshub.configuration
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.PaymentNotFoundException
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleNotFoundException
+import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleOrderException
 import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
+import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPriceCurrencyException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -41,6 +43,23 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(InvalidPaymentStatusException::class)
     fun handleInvalidPaymentStatusException(
         exception: InvalidPaymentStatusException
+    ): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(status = HttpStatus.BAD_REQUEST, error = exception.message)
+        return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
+    }
+
+    @ExceptionHandler(VehicleOrderException::class)
+    fun handleVehicleOrderException(
+        exception: VehicleOrderException
+    ): ResponseEntity<ErrorMessage> {
+        val errorMessage =
+            ErrorMessage(status = HttpStatus.UNPROCESSABLE_ENTITY, error = exception.message)
+        return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
+    }
+
+    @ExceptionHandler(InvalidPriceCurrencyException::class)
+    fun handleInvalidPriceCurrencyException(
+        exception: InvalidPriceCurrencyException
     ): ResponseEntity<ErrorMessage> {
         val errorMessage = ErrorMessage(status = HttpStatus.BAD_REQUEST, error = exception.message)
         return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
