@@ -51,6 +51,10 @@ class Vehicle(
         return updateField { status = newStatus }
     }
 
+    fun isAvailableForOrdering(): Boolean {
+        return status == VehicleStatus.AVAILABLE
+    }
+
     private fun isValidStatusTransition(current: VehicleStatus, new: VehicleStatus): Boolean {
         val validTransitions =
             mapOf(

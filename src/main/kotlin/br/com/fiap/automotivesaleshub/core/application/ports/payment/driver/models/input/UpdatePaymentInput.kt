@@ -2,4 +2,8 @@ package br.com.fiap.automotivesaleshub.core.application.ports.payment.driver.mod
 
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
 
-data class UpdatePaymentInput(val orderId: String, val status: PaymentStatus)
+data class UpdatePaymentInput(
+    val orderId: String,
+    val vehicleId: String,
+    val status: PaymentStatus,
+)
