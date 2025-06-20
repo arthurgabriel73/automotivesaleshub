@@ -64,4 +64,16 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
         val errorMessage = ErrorMessage(status = HttpStatus.BAD_REQUEST, error = exception.message)
         return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
     }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgumentException(
+        exception: IllegalArgumentException
+    ): ResponseEntity<ErrorMessage> {
+        val errorMessage =
+            ErrorMessage(
+                status = HttpStatus.BAD_REQUEST,
+                error = exception.message ?: "Invalid argument provided",
+            )
+        return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
+    }
 }

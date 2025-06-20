@@ -5,6 +5,7 @@ import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.VehicleId
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
@@ -16,13 +17,14 @@ import kotlin.test.Test
 class PaymentTest {
 
     val paymentId = PaymentId(UUID.randomUUID())
+    val vehicleId = VehicleId(UUID.randomUUID())
     val orderId = OrderId(UUID.randomUUID())
     val createdAt: Instant = Instant.now()
 
     @Test
     fun `should create a payment with correct fields`() {
         // Arrange & Act
-        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, createdAt)
+        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, vehicleId, createdAt)
 
         // Assert
         payment shouldNotBe null
@@ -35,7 +37,7 @@ class PaymentTest {
     @Test
     fun `should update status correctly and set updatedAt`() {
         // Arrange
-        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, createdAt)
+        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, vehicleId, createdAt)
 
         // Act
         val updatedPayment = payment.updateStatus(PaymentStatus.APPROVED)
@@ -49,7 +51,7 @@ class PaymentTest {
     @Test
     fun `should throw exception for invalid status transition`() {
         // Arrange
-        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, createdAt)
+        val payment = Payment(paymentId, PaymentStatus.PENDING, orderId, vehicleId, createdAt)
         payment.updateStatus(PaymentStatus.APPROVED)
 
         // Act & Assert

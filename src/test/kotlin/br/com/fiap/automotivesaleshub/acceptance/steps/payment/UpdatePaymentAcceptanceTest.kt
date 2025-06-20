@@ -1,10 +1,13 @@
 package br.com.fiap.automotivesaleshub.acceptance.steps.payment
 
+import br.com.fiap.automotivesaleshub.adapters.driven.persistence.VehicleRepositoryAdapter
 import br.com.fiap.automotivesaleshub.adapters.driven.persistence.payment.PaymentRepositoryAdapter
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
@@ -27,6 +30,7 @@ import java.util.*
 @Transactional
 class UpdatePaymentAcceptanceTest(private val paymentRepositoryAdapter: PaymentRepositoryAdapter) {
 
+    @Autowired private lateinit var vehicleRepositoryAdapter: VehicleRepositoryAdapter
     private val paymentUpdateWebhookUrl = "/v1/webhook/payments"
 
     @Autowired private lateinit var testRestTemplate: TestRestTemplate
@@ -41,12 +45,33 @@ class UpdatePaymentAcceptanceTest(private val paymentRepositoryAdapter: PaymentR
 
     @Given("the system has a pending payment")
     fun `the system has a pending payment`() {
+        val vehicleId = VehicleId(UUID.randomUUID())
+        val vehicle =
+            Vehicle(
+                vehicleId = vehicleId,
+                specifications =
+                    Specifications(
+                        make = "Fiat",
+                        model = "Uno",
+                        version = "Way",
+                        yearFabrication = "2020",
+                        yearModel = "2021",
+                        kilometers = 15000,
+                        color = "Red",
+                    ),
+                plate = Plate(plate = "ABC-4356"),
+                price = Price(amount = 30000L, currency = PriceCurrency.BRL),
+                status = VehicleStatus.PROCESSING,
+                createdAt = Instant.now(),
+            )
+        vehicleRepositoryAdapter.create(vehicle)
         orderId = UUID.randomUUID().toString()
         val payment =
             Payment(
                 paymentId = PaymentId(UUID.randomUUID()),
                 status = PaymentStatus.PENDING,
                 orderId = OrderId(UUID.fromString(orderId)),
+                vehicleId = vehicleId,
                 createdAt = Instant.now(),
                 updatedAt = Instant.now(),
             )
@@ -60,6 +85,7 @@ class UpdatePaymentAcceptanceTest(private val paymentRepositoryAdapter: PaymentR
 
     @When("the external payment service submits the payment update")
     fun `the external payment service submits the payment update`() {
+
         response =
             testRestTemplate.postForEntity(
                 "$paymentUpdateWebhookUrl/${orderId}",

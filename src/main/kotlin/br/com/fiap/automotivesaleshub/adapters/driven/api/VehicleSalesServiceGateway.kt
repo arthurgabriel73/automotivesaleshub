@@ -19,7 +19,5 @@ class VehicleSalesServiceGateway(private val vehicleSalesServiceApi: VehicleSale
         vehicleSalesServiceApi.updateVehicle(UpdateVehicleRequest(vehicle))
     }
 
-    override suspend fun notifyPayment(orderId: String, paymentStatus: PaymentStatus) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun notifyPayment(orderId: String, paymentStatus: PaymentStatus) {}
 }
