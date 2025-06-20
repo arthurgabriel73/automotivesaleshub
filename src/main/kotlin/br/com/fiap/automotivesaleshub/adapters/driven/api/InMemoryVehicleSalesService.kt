@@ -1,6 +1,7 @@
 package br.com.fiap.automotivesaleshub.adapters.driven.api
 
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleSalesService
+import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
 
 class InMemoryVehicleSalesService : VehicleSalesService {
@@ -15,6 +16,8 @@ class InMemoryVehicleSalesService : VehicleSalesService {
         if (index == -1) return
         vehicles[index] = toNewInstance(vehicle)
     }
+
+    override suspend fun notifyPayment(orderId: String, paymentStatus: PaymentStatus) {}
 
     private fun toNewInstance(vehicle: Vehicle): Vehicle {
         return Vehicle(

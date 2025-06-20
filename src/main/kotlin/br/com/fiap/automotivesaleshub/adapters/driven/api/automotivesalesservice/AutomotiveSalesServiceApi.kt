@@ -28,8 +28,9 @@ class AutomotiveSalesServiceApi() : VehicleSalesServiceApi {
     }
 
     override suspend fun updateVehicle(request: UpdateVehicleRequest): UpdateVehicleResponse {
+        val vehicleId = request.vehicle.vehicleId.string()
         restTemplate.exchange(
-            "$baseUrl/vehicles",
+            "$baseUrl/vehicles/$vehicleId",
             HttpMethod.PUT,
             HttpEntity(request.toMap()),
             String::class.java,

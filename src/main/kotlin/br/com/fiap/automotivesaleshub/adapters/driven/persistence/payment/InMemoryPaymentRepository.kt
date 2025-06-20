@@ -28,6 +28,7 @@ class InMemoryPaymentRepository : PaymentRepository {
             paymentId = payment.paymentId,
             status = payment.status,
             orderId = payment.orderId,
+            vehicleId = payment.vehicleId,
             createdAt = payment.createdAt,
             updatedAt = payment.updatedAt,
         )

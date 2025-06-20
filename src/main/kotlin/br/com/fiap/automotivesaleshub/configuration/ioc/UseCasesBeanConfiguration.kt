@@ -33,8 +33,12 @@ class UseCasesBeanConfiguration {
     }
 
     @Bean
-    fun updatePaymentUseCase(paymentRepository: PaymentRepository): UpdatePaymentDriverPort {
-        return UpdatePaymentUseCase(paymentRepository)
+    fun updatePaymentUseCase(
+        paymentRepository: PaymentRepository,
+        vehicleRepository: VehicleRepository,
+        vehicleSalesService: VehicleSalesService,
+    ): UpdatePaymentDriverPort {
+        return UpdatePaymentUseCase(paymentRepository, vehicleRepository, vehicleSalesService)
     }
 
     @Bean

@@ -26,4 +26,8 @@ class VehicleRepositoryAdapter(private val jpaRepository: JpaVehicleRepository) 
     override fun update(vehicle: Vehicle): Vehicle {
         return jpaRepository.save(VehicleEntity.fromDomain(vehicle)).toDomain()
     }
+
+    override fun getVehicleForUpdate(vehicleId: VehicleId): Vehicle? {
+        TODO("Not yet implemented")
+    }
 }
