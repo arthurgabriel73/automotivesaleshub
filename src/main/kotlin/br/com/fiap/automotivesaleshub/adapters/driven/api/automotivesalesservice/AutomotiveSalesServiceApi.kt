@@ -1,6 +1,7 @@
 package br.com.fiap.automotivesaleshub.adapters.driven.api.automotivesalesservice
 
 import br.com.fiap.automotivesaleshub.adapters.driven.api.VehicleSalesServiceApi
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.NotifyPaymentRequest
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.SaveVehicleRequest
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.UpdateVehicleRequest
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.SaveVehicleResponse
@@ -36,5 +37,13 @@ class AutomotiveSalesServiceApi() : VehicleSalesServiceApi {
             String::class.java,
         )
         return UpdateVehicleResponse(result = "Vehicle updated successfully")
+    }
+
+    override suspend fun notifyPayment(request: NotifyPaymentRequest) {
+        restTemplate.postForEntity(
+            "$baseUrl/orders/notify-payment/${request.orderId}",
+            HttpEntity(request.toJson()),
+            String::class.java,
+        )
     }
 }
