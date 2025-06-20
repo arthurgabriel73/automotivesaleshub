@@ -4,12 +4,14 @@ import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaym
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentStatus
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.VehicleId
 import java.time.Instant
 
 class Payment(
     paymentId: PaymentId,
     status: PaymentStatus = PaymentStatus.PENDING,
     orderId: OrderId,
+    vehicleId: VehicleId,
     createdAt: Instant? = null,
     updatedAt: Instant? = null,
 ) {
@@ -20,6 +22,9 @@ class Payment(
         private set
 
     var orderId = orderId
+        private set
+
+    var vehicleId = vehicleId
         private set
 
     var createdAt = createdAt
