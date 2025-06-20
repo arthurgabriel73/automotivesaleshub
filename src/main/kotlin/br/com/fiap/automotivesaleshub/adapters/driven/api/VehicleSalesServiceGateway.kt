@@ -1,5 +1,6 @@
 package br.com.fiap.automotivesaleshub.adapters.driven.api
 
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.NotifyPaymentRequest
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.SaveVehicleRequest
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.UpdateVehicleRequest
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleSalesService
@@ -19,5 +20,9 @@ class VehicleSalesServiceGateway(private val vehicleSalesServiceApi: VehicleSale
         vehicleSalesServiceApi.updateVehicle(UpdateVehicleRequest(vehicle))
     }
 
-    override suspend fun notifyPayment(orderId: String, paymentStatus: PaymentStatus) {}
+    override suspend fun notifyPayment(orderId: String, paymentStatus: PaymentStatus) {
+        vehicleSalesServiceApi.notifyPayment(
+            NotifyPaymentRequest(orderId = orderId, paymentStatus = paymentStatus)
+        )
+    }
 }
