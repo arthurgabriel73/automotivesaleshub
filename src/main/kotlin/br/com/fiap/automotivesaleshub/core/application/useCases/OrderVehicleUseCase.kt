@@ -25,7 +25,7 @@ class OrderVehicleUseCase(
     override fun execute(input: OrderVehicleInput): OrderVehicleOutput {
         try {
             val reservedVehicle = reserveVehicle(input.vehicleId)
-            createPayment(input.orderId)
+            createPayment(input.orderId, input.vehicleId)
             val qrCode = getPaymentQRCode(input.orderId, reservedVehicle)
             return OrderVehicleOutput.success(qrCode)
         } catch (e: Exception) {
@@ -45,11 +45,12 @@ class OrderVehicleUseCase(
         return vehicleRepository.update(reservedVehicle)
     }
 
-    private fun createPayment(orderId: String) {
+    private fun createPayment(orderId: String, vehicleId: String) {
         val payment =
             Payment(
                 paymentId = PaymentId(UUID.randomUUID()),
                 orderId = OrderId(UUID.fromString(orderId)),
+                vehicleId = VehicleId(UUID.fromString(vehicleId)),
                 createdAt = Instant.now(),
             )
         paymentRepository.create(payment)

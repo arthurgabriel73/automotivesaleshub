@@ -29,6 +29,10 @@ class InMemoryVehicleRepository : VehicleRepository {
         return toNewInstance(vehicles[index])
     }
 
+    override fun getVehicleForUpdate(vehicleId: VehicleId): Vehicle? {
+        TODO("Not yet implemented")
+    }
+
     private fun toNewInstance(vehicle: Vehicle): Vehicle {
         return Vehicle(
             vehicleId = vehicle.vehicleId,
