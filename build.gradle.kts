@@ -40,7 +40,6 @@ dependencies {
     testImplementation("io.cucumber:cucumber-spring:7.23.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.23.0")
     testRuntimeOnly("org.junit.platform:junit-platform-console-standalone:1.10.2")
-    testImplementation("org.wiremock:wiremock:3.13.1")
 }
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
