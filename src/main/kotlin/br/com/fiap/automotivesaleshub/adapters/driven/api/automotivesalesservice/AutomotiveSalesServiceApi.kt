@@ -48,4 +48,12 @@ class AutomotiveSalesServiceApi() : VehicleSalesServiceApi {
         )
         return NotifyPaymentResponse(result = "Payment notification sent")
     }
+
+    override suspend fun notifyPayment(request: NotifyPaymentRequest) {
+        restTemplate.postForEntity(
+            "$baseUrl/orders/notify-payment/${request.orderId}",
+            HttpEntity(request.toJson()),
+            String::class.java,
+        )
+    }
 }
