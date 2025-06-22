@@ -40,6 +40,8 @@ dependencies {
     testImplementation("io.cucumber:cucumber-spring:7.23.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.23.0")
     testRuntimeOnly("org.junit.platform:junit-platform-console-standalone:1.10.2")
+    implementation("com.google.zxing:core:3.3.0")
+    implementation("com.google.zxing:javase:3.3.0")
 }
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
@@ -49,6 +51,8 @@ allOpen {
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
 }
+
+kover { reports { filters { includes { classes("br.com.fiap.automotivesaleshub.core.*") } } } }
 
 tasks.withType<Test> {
     useJUnitPlatform()
@@ -62,14 +66,16 @@ tasks.test {
 
 tasks {
     val runBDDTests by
-        registering(JavaExec::class) {
-            dependsOn(testClasses)
-            doFirst { println("Running parallel Cucumber tests") }
-            classpath = sourceSets["test"].runtimeClasspath
-            mainClass.set("org.junit.platform.console.ConsoleLauncher")
-            args("--include-engine", "cucumber")
-            args("--details", "tree")
-            args("--scan-classpath")
+        registering(Test::class) {
+            description = "Run Cucumber BDD tests"
+            group = "verification"
+
+            useJUnitPlatform { includeEngines("cucumber") }
+
+            testLogging {
+                events("skipped", "passed", "failed")
+                showStandardStreams = true
+            }
 
             systemProperty("cucumber.execution.parallel.enabled", true)
             systemProperty("cucumber.execution.parallel.config.strategy", "dynamic")
@@ -78,5 +84,16 @@ tasks {
                 "pretty, summary, timeline:build/reports/timeline, html:build/reports/cucumber.html",
             )
             systemProperty("cucumber.publish.quiet", true)
+
+            finalizedBy("koverXmlReport", "koverHtmlReport")
         }
+
+    test {
+        dependsOn(runBDDTests)
+        finalizedBy("koverXmlReport", "koverHtmlReport")
+    }
+
+    koverHtmlReport { dependsOn(test, runBDDTests) }
+
+    koverXmlReport { dependsOn(test, runBDDTests) }
 }

@@ -5,7 +5,6 @@ import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.Vehic
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleNotFoundException
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehiclePurchaseException
 import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
-import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPriceCurrencyException
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.exceptions.InvalidVehicleStatusException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -55,14 +54,6 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<ErrorMessage> {
         val errorMessage =
             ErrorMessage(status = HttpStatus.NOT_ACCEPTABLE, error = exception.message)
-        return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
-    }
-
-    @ExceptionHandler(InvalidPriceCurrencyException::class)
-    fun handleInvalidPriceCurrencyException(
-        exception: InvalidPriceCurrencyException
-    ): ResponseEntity<ErrorMessage> {
-        val errorMessage = ErrorMessage(status = HttpStatus.BAD_REQUEST, error = exception.message)
         return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
     }
 

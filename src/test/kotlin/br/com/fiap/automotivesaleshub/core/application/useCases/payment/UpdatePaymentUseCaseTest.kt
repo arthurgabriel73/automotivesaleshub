@@ -5,6 +5,7 @@ import br.com.fiap.automotivesaleshub.adapters.driven.persistence.InMemoryVehicl
 import br.com.fiap.automotivesaleshub.adapters.driven.persistence.payment.InMemoryPaymentRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.PaymentRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.payment.driver.models.input.UpdatePaymentInput
+import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.PaymentNotFoundException
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
@@ -14,6 +15,7 @@ import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import java.time.Instant
 import java.util.*
 import kotlin.test.Test
@@ -82,5 +84,37 @@ class UpdatePaymentUseCaseTest {
         payment.createdAt shouldBe existingPayment.createdAt
         payment.updatedAt shouldNotBe null
         payment.updatedAt!!.isAfter(existingPayment.createdAt)
+    }
+
+    @Test
+    fun `should handle rejected payment and update vehicle status to AVAILABLE`() {
+        // Arrange
+        val rejectedPaymentInput =
+            UpdatePaymentInput(existingOrder.string(), PaymentStatus.REJECTED.name)
+        paymentRepository.create(existingPayment)
+        vehicleRepository.create(existingVehicle)
+
+        // Act
+        sut.execute(rejectedPaymentInput)
+
+        // Assert
+        val payment = paymentRepository.findByOrderId(existingPayment.orderId)
+        if (payment == null) throw AssertionError("Updated payment should not be null")
+        payment.status shouldBe PaymentStatus.REJECTED
+
+        val vehicle = vehicleRepository.findById(existingVehicleId)
+        if (vehicle == null) throw AssertionError("Vehicle should not be null")
+        vehicle.status shouldBe VehicleStatus.AVAILABLE
+    }
+
+    @Test
+    fun `should throw exception when payment not found for orderId`() {
+        // Arrange
+        val nonExistentOrderId = OrderId(UUID.randomUUID())
+        val updateInput =
+            UpdatePaymentInput(nonExistentOrderId.string(), PaymentStatus.APPROVED.name)
+
+        // Act & Assert
+        assertThrows<PaymentNotFoundException> { sut.execute(updateInput) }
     }
 }
