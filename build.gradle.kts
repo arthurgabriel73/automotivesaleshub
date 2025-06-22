@@ -52,21 +52,7 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-kover {
-    reports {
-        filters {
-            includes {
-                classes(
-                    "br.com.fiap.automotivesaleshub.adapters",
-                    "br.com.fiap.automotivesaleshub.core.*",
-                )
-            }
-            excludes {
-                classes("*.*Application*", "*.config.*", "*.dto.*", "*.*Config*", "*.models.*")
-            }
-        }
-    }
-}
+kover { reports { filters { includes { classes("br.com.fiap.automotivesaleshub.core.*") } } } }
 
 tasks.withType<Test> {
     useJUnitPlatform()
