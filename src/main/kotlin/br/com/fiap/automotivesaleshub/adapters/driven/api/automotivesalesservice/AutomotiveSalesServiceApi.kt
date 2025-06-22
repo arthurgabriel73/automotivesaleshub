@@ -4,6 +4,7 @@ import br.com.fiap.automotivesaleshub.adapters.driven.api.VehicleSalesServiceApi
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.NotifyPaymentRequest
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.SaveVehicleRequest
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.request.UpdateVehicleRequest
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.NotifyPaymentResponse
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.SaveVehicleResponse
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.UpdateVehicleResponse
 import jakarta.inject.Named
@@ -25,7 +26,7 @@ class AutomotiveSalesServiceApi() : VehicleSalesServiceApi {
             HttpEntity(request.toMap()),
             String::class.java,
         )
-        return SaveVehicleResponse(result = "Vehicle saved successfully")
+        return SaveVehicleResponse(result = "Vehicle registration sent")
     }
 
     override suspend fun updateVehicle(request: UpdateVehicleRequest): UpdateVehicleResponse {
@@ -36,7 +37,16 @@ class AutomotiveSalesServiceApi() : VehicleSalesServiceApi {
             HttpEntity(request.toMap()),
             String::class.java,
         )
-        return UpdateVehicleResponse(result = "Vehicle updated successfully")
+        return UpdateVehicleResponse(result = "Vehicle update sent")
+    }
+
+    override suspend fun notifyPayment(request: NotifyPaymentRequest): NotifyPaymentResponse {
+        restTemplate.postForEntity(
+            "$baseUrl/orders/notify-payment/${request.orderId}",
+            HttpEntity(request.toMap()),
+            String::class.java,
+        )
+        return NotifyPaymentResponse(result = "Payment notification sent")
     }
 
     override suspend fun notifyPayment(request: NotifyPaymentRequest) {

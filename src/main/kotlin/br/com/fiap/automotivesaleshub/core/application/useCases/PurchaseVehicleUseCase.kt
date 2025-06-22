@@ -3,10 +3,10 @@ package br.com.fiap.automotivesaleshub.core.application.useCases
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.PaymentRepository
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.PaymentService
 import br.com.fiap.automotivesaleshub.core.application.ports.driven.VehicleRepository
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.OrderVehicleDriverPort
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.OrderVehicleInput
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.OrderVehicleOutput
-import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleOrderException
+import br.com.fiap.automotivesaleshub.core.application.ports.driver.PurchaseVehicleDriverPort
+import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.PurchaseVehicleInput
+import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.PurchaseVehicleOutput
+import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehiclePurchaseException
 import br.com.fiap.automotivesaleshub.core.domain.payment.models.Payment
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.OrderId
 import br.com.fiap.automotivesaleshub.core.domain.payment.valueObjects.PaymentId
@@ -17,27 +17,25 @@ import java.awt.image.BufferedImage
 import java.time.Instant
 import java.util.*
 
-class OrderVehicleUseCase(
+class PurchaseVehicleUseCase(
     val vehicleRepository: VehicleRepository,
     val paymentRepository: PaymentRepository,
     val paymentService: PaymentService,
-) : OrderVehicleDriverPort {
-    override fun execute(input: OrderVehicleInput): OrderVehicleOutput {
+) : PurchaseVehicleDriverPort {
+    override fun execute(input: PurchaseVehicleInput): PurchaseVehicleOutput {
         try {
             val reservedVehicle = reserveVehicle(input.vehicleId)
             createPayment(input.orderId, input.vehicleId)
             val qrCode = getPaymentQRCode(input.orderId, reservedVehicle)
-            return OrderVehicleOutput.success(qrCode)
+            return PurchaseVehicleOutput.success(qrCode)
         } catch (e: Exception) {
-            throw VehicleOrderException("Failed to order vehicle: ${e.message}")
+            throw VehiclePurchaseException("Failed to order vehicle: ${e.message}")
         }
     }
 
     private fun reserveVehicle(vehicleId: String): Vehicle {
         val vehicleId = VehicleId(UUID.fromString(vehicleId))
-        val vehicle =
-            vehicleRepository.getVehicleForUpdate(vehicleId)
-                ?: throw Exception("Vehicle not found.")
+        val vehicle = vehicleRepository.findById(vehicleId) ?: throw Exception("Vehicle not found.")
         if (!vehicle.isAvailableForOrdering())
             throw Exception("Vehicle is not available for ordering.")
         // TODO: Implement reservation within the domain entity

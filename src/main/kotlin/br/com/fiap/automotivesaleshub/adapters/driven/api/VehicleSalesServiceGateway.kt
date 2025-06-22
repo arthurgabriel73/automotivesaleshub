@@ -21,8 +21,6 @@ class VehicleSalesServiceGateway(private val vehicleSalesServiceApi: VehicleSale
     }
 
     override suspend fun notifyPayment(orderId: String, paymentStatus: PaymentStatus) {
-        vehicleSalesServiceApi.notifyPayment(
-            NotifyPaymentRequest(orderId = orderId, paymentStatus = paymentStatus)
-        )
+        vehicleSalesServiceApi.notifyPayment(NotifyPaymentRequest(orderId, paymentStatus))
     }
 }
