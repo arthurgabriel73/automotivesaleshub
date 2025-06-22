@@ -20,7 +20,7 @@ data class PaymentNotFoundException(
     override val cause: Throwable? = null,
 ) : ApplicationException(message, cause)
 
-data class VehicleOrderException(
+data class VehiclePurchaseException(
     override val message: String = "Failed to order vehicle.",
     override val cause: Throwable? = null,
 ) : ApplicationException(message, cause)

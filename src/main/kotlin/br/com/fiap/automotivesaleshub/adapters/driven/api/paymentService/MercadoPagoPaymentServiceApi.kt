@@ -64,7 +64,6 @@ class MercadoPagoPaymentServiceApi : PaymentServiceApi {
                 OrderPaymentResponse::class.java,
                 headers,
             )
-
         return GenerateQRCodeResponse(qrCode = response.body?.qr_data)
     }
 

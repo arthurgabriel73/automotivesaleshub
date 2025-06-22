@@ -1,7 +1,7 @@
 package br.com.fiap.automotivesaleshub.adapters.driven.persistence
 
-import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
+import org.springframework.data.jpa.repository.JpaRepository
 
 interface JpaVehicleRepository : JpaRepository<VehicleEntity, UUID> {
     fun findByVehicleId(vehicleId: UUID): VehicleEntity?

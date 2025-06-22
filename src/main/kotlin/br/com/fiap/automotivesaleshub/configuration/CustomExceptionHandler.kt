@@ -3,7 +3,7 @@ package br.com.fiap.automotivesaleshub.configuration
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.PaymentNotFoundException
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleIsAlreadyRegisteredException
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleNotFoundException
-import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleOrderException
+import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehiclePurchaseException
 import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
 import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPriceCurrencyException
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.exceptions.InvalidVehicleStatusException
@@ -49,12 +49,12 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
     }
 
-    @ExceptionHandler(VehicleOrderException::class)
+    @ExceptionHandler(VehiclePurchaseException::class)
     fun handleVehicleOrderException(
-        exception: VehicleOrderException
+        exception: VehiclePurchaseException
     ): ResponseEntity<ErrorMessage> {
         val errorMessage =
-            ErrorMessage(status = HttpStatus.UNPROCESSABLE_ENTITY, error = exception.message)
+            ErrorMessage(status = HttpStatus.NOT_ACCEPTABLE, error = exception.message)
         return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
     }
 

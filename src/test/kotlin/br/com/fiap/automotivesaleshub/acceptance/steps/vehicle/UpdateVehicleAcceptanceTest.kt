@@ -1,14 +1,10 @@
 package br.com.fiap.automotivesaleshub.acceptance.steps.vehicle
 
-import br.com.fiap.automotivesaleshub.adapters.driven.api.automotivesalesservice.AutomotiveSalesServiceApi
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.kotest.matchers.shouldBe
-import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
@@ -17,7 +13,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.RestTemplate
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -28,12 +23,6 @@ import java.util.*
 @Transactional
 class UpdateVehicleAcceptanceTest {
     private val vehiclesUrl = "/v1/vehicles"
-
-    @Value("\${automotive.sales.service.url}") lateinit var salesServiceUrl: String
-
-    @Mock private lateinit var restTemplate: RestTemplate
-
-    @InjectMocks private lateinit var automotiveSalesServiceApi: AutomotiveSalesServiceApi
 
     @Autowired private lateinit var testRestTemplate: TestRestTemplate
 

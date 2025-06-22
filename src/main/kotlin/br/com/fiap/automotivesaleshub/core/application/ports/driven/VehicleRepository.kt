@@ -12,6 +12,4 @@ interface VehicleRepository {
     fun findByPlate(plate: Plate): Vehicle?
 
     fun update(vehicle: Vehicle): Vehicle
-
-    fun getVehicleForUpdate(vehicleId: VehicleId): Vehicle?
 }
