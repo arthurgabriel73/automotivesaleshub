@@ -8,6 +8,8 @@ import br.com.fiap.automotivesaleshub.adapters.driven.api.paymentService.dto.res
 import jakarta.inject.Named
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.web.client.RestTemplate
 
 @Named
@@ -28,8 +30,7 @@ class MercadoPagoPaymentServiceApi : PaymentServiceApi {
     @Value("\${server.notification.url}") private val SERVER_NOTIFICATION_URL: String? = null
 
     override fun generateQRCode(request: GenerateQRCodeRequest): GenerateQRCodeResponse {
-        val url = generateUrl()
-        val headers = generateHeaders()
+        generateUrl()
         val item =
             OrderPaymentRequestItem(
                 id = request.vehicle.vehicleId.string(),
@@ -59,10 +60,9 @@ class MercadoPagoPaymentServiceApi : PaymentServiceApi {
 
         val response =
             restTemplate.postForEntity(
-                url,
-                HttpEntity(orderPaymentRequest.toJson()),
+                generateUrl(),
+                HttpEntity(orderPaymentRequest.toJson(), generateHeaders()),
                 OrderPaymentResponse::class.java,
-                headers,
             )
         return GenerateQRCodeResponse(qrCode = response.body?.qr_data)
     }
@@ -71,10 +71,10 @@ class MercadoPagoPaymentServiceApi : PaymentServiceApi {
         return "$API_CODIGO_QR_URL/$API_ID_VENDEDOR/$API_URL_CAIXA/$API_CAIXA_ID_EXTERNO/qrs"
     }
 
-    private fun generateHeaders(): Map<String, String> {
-        return mapOf(
-            "Authorization" to "Bearer $API_ACCESS_TOKEN",
-            "Content-Type" to "application/json",
-        )
+    private fun generateHeaders(): HttpHeaders {
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.APPLICATION_JSON
+        headers.setBearerAuth(API_ACCESS_TOKEN ?: "")
+        return headers
     }
 }

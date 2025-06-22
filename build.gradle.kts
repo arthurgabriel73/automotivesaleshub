@@ -40,6 +40,8 @@ dependencies {
     testImplementation("io.cucumber:cucumber-spring:7.23.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.23.0")
     testRuntimeOnly("org.junit.platform:junit-platform-console-standalone:1.10.2")
+    implementation("com.google.zxing:core:3.3.0")
+    implementation("com.google.zxing:javase:3.3.0")
 }
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
