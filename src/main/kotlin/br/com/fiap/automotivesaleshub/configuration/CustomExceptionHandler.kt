@@ -6,6 +6,7 @@ import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.Vehic
 import br.com.fiap.automotivesaleshub.core.application.useCases.exceptions.VehicleOrderException
 import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaymentStatusException
 import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPriceCurrencyException
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.exceptions.InvalidVehicleStatusException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -74,6 +75,14 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
                 status = HttpStatus.BAD_REQUEST,
                 error = exception.message ?: "Invalid argument provided",
             )
+        return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
+    }
+
+    @ExceptionHandler(InvalidVehicleStatusException::class)
+    fun handleInvalidVehicleStatusException(
+        exception: InvalidVehicleStatusException
+    ): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(status = HttpStatus.BAD_REQUEST, error = exception.message)
         return ResponseEntity(errorMessage, HttpHeaders(), errorMessage.status)
     }
 }
