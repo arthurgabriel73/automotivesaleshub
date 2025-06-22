@@ -1,5 +1,8 @@
 package br.com.fiap.automotivesaleshub.acceptance.steps.vehicle
 
+import br.com.fiap.automotivesaleshub.adapters.driven.persistence.VehicleRepositoryAdapter
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.models.Vehicle
+import br.com.fiap.automotivesaleshub.core.domain.vehicle.valueObjects.*
 import io.cucumber.java.en.And
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import java.time.Instant
 import java.util.*
 
 @Testcontainers
@@ -24,10 +28,11 @@ class PurchaseVehicleAcceptanceTest {
     private val vehiclesUrl = "/v1/vehicles"
 
     @Autowired private lateinit var testRestTemplate: TestRestTemplate
+    @Autowired private lateinit var vehicleRepositoryAdapter: VehicleRepositoryAdapter
 
     private lateinit var response: ResponseEntity<String>
     private lateinit var requestInput: Map<String, Any>
-    private lateinit var vehicleId: String
+    private var vehicleId: VehicleId = VehicleId(UUID.randomUUID())
 
     companion object {
         @Container @ServiceConnection val postgres = PostgreSQLContainer("postgres:16.3")
@@ -35,27 +40,25 @@ class PurchaseVehicleAcceptanceTest {
 
     @Given("the system has a valid vehicle available for purchase")
     fun `the system has a valid vehicle available for purchase`() {
-        val input =
-            mapOf(
-                "make" to "Fiat",
-                "model" to "Argo",
-                "version" to "HGT",
-                "yearFabrication" to "2020",
-                "yearModel" to "2021",
-                "kilometers" to 0,
-                "color" to "Black",
-                "plate" to "HBD-8787",
-                "price" to 44000L,
-                "priceCurrency" to "BRL",
-                "status" to "AVAILABLE",
+        val vehicle =
+            Vehicle(
+                vehicleId = vehicleId,
+                specifications =
+                    Specifications(
+                        make = "Fiat",
+                        model = "Argo",
+                        version = "HGT",
+                        yearFabrication = "2020",
+                        yearModel = "2021",
+                        kilometers = 0,
+                        color = "Black",
+                    ),
+                plate = Plate(plate = "HBD-8787"),
+                price = Price(amount = 44000L, currency = PriceCurrency.BRL),
+                status = VehicleStatus.AVAILABLE,
+                createdAt = Instant.now(),
             )
-        vehicleId =
-            testRestTemplate
-                .postForEntity(vehiclesUrl, input, String::class.java)
-                .body
-                .toString()
-                .substringAfterLast("vehicleId\":\"")
-                .substringBefore("\"")
+        vehicleRepositoryAdapter.create(vehicle)
     }
 
     @And("the sales representative has a valid vehicle purchase request form")
@@ -80,27 +83,25 @@ class PurchaseVehicleAcceptanceTest {
 
     @Given("the system has a vehicle that has already been sold")
     fun `the system has a vehicle that has already been sold`() {
-        val input =
-            mapOf(
-                "make" to "Fiat",
-                "model" to "Argo",
-                "version" to "HGT",
-                "yearFabrication" to "2020",
-                "yearModel" to "2021",
-                "kilometers" to 0,
-                "color" to "Black",
-                "plate" to "HBD-8787",
-                "price" to 44000L,
-                "priceCurrency" to "BRL",
-                "status" to "SOLD",
+        val vehicle =
+            Vehicle(
+                vehicleId = vehicleId,
+                specifications =
+                    Specifications(
+                        make = "Fiat",
+                        model = "Argo",
+                        version = "HGT",
+                        yearFabrication = "2020",
+                        yearModel = "2021",
+                        kilometers = 0,
+                        color = "Black",
+                    ),
+                plate = Plate(plate = "HBD-8787"),
+                price = Price(amount = 44000L, currency = PriceCurrency.BRL),
+                status = VehicleStatus.SOLD,
+                createdAt = Instant.now(),
             )
-        vehicleId =
-            testRestTemplate
-                .postForEntity(vehiclesUrl, input, String::class.java)
-                .body
-                .toString()
-                .substringAfterLast("vehicleId\":\"")
-                .substringBefore("\"")
+        vehicleRepositoryAdapter.create(vehicle)
     }
 
     @When("the sales representative attempts to request the purchase of the sold vehicle")
