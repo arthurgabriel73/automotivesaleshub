@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "ad632d1e-2b9c-41cc-87a6-5e06ec20d3e7",
+		"name": "Flow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33621148"
+	},
+	"item": [
+		{
+			"name": "Cadastrar veículo para venda",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"vehicleId\", jsonData.vehicleId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"make\": \"Fiat\",\n    \"model\": \"Uno\",\n    \"version\": \"Way\",\n    \"yearFabrication\": \"2020\",\n    \"yearModel\": \"2021\",\n    \"kilometers\": 0,\n    \"color\": \"Red\",\n    \"plate\": \"RTF-1254\",\n    \"price\": 3500000,\n    \"priceCurrency\": \"BRL\",\n    \"status\": \"AVAILABLE\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local-hub}}/v1/vehicles",
+					"host": [
+						"{{local-hub}}"
+					],
+					"path": [
+						"v1",
+						"vehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Veículos Disponíveis",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local-service}}/vehicles/available",
+					"host": [
+						"{{local-service}}"
+					],
+					"path": [
+						"vehicles",
+						"available"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fazer pedido de veículo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"orderId\", jsonData.orderId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"vehicleId\": \"{{vehicleId}}\",\n    \"customerId\": \"02008249611\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local-service}}/orders",
+					"host": [
+						"{{local-service}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Webhook - Notificar pagamento aprovado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"resource\": \"https://api.mercadopago.com\",\n    \"topic\": \"payment\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{local-hub}}/v1/webhook/payments/{{orderId}}",
+					"host": [
+						"{{local-hub}}"
+					],
+					"path": [
+						"v1",
+						"webhook",
+						"payments",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Veículos Vendidos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{local-service}}/vehicles/sold",
+					"host": [
+						"{{local-service}}"
+					],
+					"path": [
+						"vehicles",
+						"sold"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
