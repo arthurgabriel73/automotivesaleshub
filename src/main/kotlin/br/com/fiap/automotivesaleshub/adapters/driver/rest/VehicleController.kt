@@ -1,11 +1,11 @@
 package br.com.fiap.automotivesaleshub.adapters.driver.rest
 
 import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.RegisterVehicleRequest
+import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.UpdateVehicleRequest
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.PurchaseVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.RegisterVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.UpdateVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.PurchaseVehicleInput
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.UpdateVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.PurchaseVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.RegisterVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.UpdateVehicleOutput
@@ -37,10 +37,10 @@ class VehicleController(
     @Transactional
     fun updateVehicle(
         @PathVariable(name = "vehicleId", required = true) vehicleId: String,
-        @Validated @RequestBody input: UpdateVehicleInput,
+        @Valid @RequestBody request: UpdateVehicleRequest,
     ): UpdateVehicleOutput {
         // TODO: get ID from path variable only
-        return updateVehicleDriverPort.execute(input)
+        return updateVehicleDriverPort.execute(request.toInput())
     }
 
     @PostMapping("/purchase")
