@@ -52,8 +52,6 @@ allOpen {
     annotation("jakarta.persistence.Embeddable")
 }
 
-kover { reports { filters { includes { classes("br.com.fiap.automotivesaleshub.core.*") } } } }
-
 tasks.withType<Test> {
     useJUnitPlatform()
     testLogging { events("skipped", "passed", "failed") }
@@ -66,16 +64,14 @@ tasks.test {
 
 tasks {
     val runBDDTests by
-        registering(Test::class) {
-            description = "Run Cucumber BDD tests"
-            group = "verification"
-
-            useJUnitPlatform { includeEngines("cucumber") }
-
-            testLogging {
-                events("skipped", "passed", "failed")
-                showStandardStreams = true
-            }
+        registering(JavaExec::class) {
+            dependsOn(testClasses)
+            doFirst { println("Running parallel Cucumber tests") }
+            classpath = sourceSets["test"].runtimeClasspath
+            mainClass.set("org.junit.platform.console.ConsoleLauncher")
+            args("--include-engine", "cucumber")
+            args("--details", "tree")
+            args("--scan-classpath")
 
             systemProperty("cucumber.execution.parallel.enabled", true)
             systemProperty("cucumber.execution.parallel.config.strategy", "dynamic")
@@ -84,16 +80,5 @@ tasks {
                 "pretty, summary, timeline:build/reports/timeline, html:build/reports/cucumber.html",
             )
             systemProperty("cucumber.publish.quiet", true)
-
-            finalizedBy("koverXmlReport", "koverHtmlReport")
         }
-
-    test {
-        dependsOn(runBDDTests)
-        finalizedBy("koverXmlReport", "koverHtmlReport")
-    }
-
-    koverHtmlReport { dependsOn(test, runBDDTests) }
-
-    koverXmlReport { dependsOn(test, runBDDTests) }
 }
