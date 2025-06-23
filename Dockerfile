@@ -1,3 +1,3 @@
 FROM amazoncorretto:21-alpine-jdk
-COPY automootivesaleshub-0.0.1-SNAPSHOT.jar app.jar
+COPY automotivesaleshub-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]

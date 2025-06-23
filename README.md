@@ -94,6 +94,16 @@ Os demais cenários estão disponíveis no diretório `src/test/resources/featur
 
 [Voltar ao topo](#automotivesaleshub)
 
+```bash
+kubectl apply -f postgres-secret.yaml
+kubectl apply -f postgres_hub_deployment.yaml
+kubectl apply -f postgres_service_deployment.yaml
+kubectl apply -f automotivesaleshub_deployment.yaml
+kubectl apply -f automotivesalesservice_deployment.yaml
+kubectl apply -f metrics.yaml
+kubectl apply -f app_hpa.yaml
+```
+
 ## Acessando a API
 
 [Voltar ao topo](#automotivesaleshub)
