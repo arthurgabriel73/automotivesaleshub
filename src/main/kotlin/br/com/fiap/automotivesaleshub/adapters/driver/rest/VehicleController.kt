@@ -1,15 +1,16 @@
 package br.com.fiap.automotivesaleshub.adapters.driver.rest
 
+import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.RegisterVehicleRequest
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.PurchaseVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.RegisterVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.UpdateVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.PurchaseVehicleInput
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.RegisterVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.UpdateVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.PurchaseVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.RegisterVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.UpdateVehicleOutput
 import jakarta.transaction.Transactional
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -26,9 +27,9 @@ class VehicleController(
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     fun registerVehicle(
-        @Validated @RequestBody input: RegisterVehicleInput
+        @Valid @RequestBody request: RegisterVehicleRequest
     ): RegisterVehicleOutput {
-        return registerVehicleDriverPort.execute(input)
+        return registerVehicleDriverPort.execute(request.toInput())
     }
 
     @PutMapping("/{vehicleId}")

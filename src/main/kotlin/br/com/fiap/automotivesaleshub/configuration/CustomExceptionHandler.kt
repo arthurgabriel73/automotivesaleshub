@@ -8,13 +8,41 @@ import br.com.fiap.automotivesaleshub.core.domain.payment.exceptions.InvalidPaym
 import br.com.fiap.automotivesaleshub.core.domain.vehicle.exceptions.InvalidVehicleStatusException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
 class CustomExceptionHandler : ResponseEntityExceptionHandler() {
+
+    override fun handleMethodArgumentNotValid(
+        exception: MethodArgumentNotValidException,
+        headers: HttpHeaders,
+        statusCode: HttpStatusCode,
+        request: WebRequest,
+    ): ResponseEntity<Any>? {
+
+        val errors =
+            exception.bindingResult.fieldErrors.map {
+                mapOf(
+                    "path" to listOf(it.field),
+                    "message" to (it.defaultMessage ?: "Invalid argument"),
+                )
+            }
+
+        val errorBody =
+            mapOf(
+                "status" to HttpStatus.BAD_REQUEST.value(),
+                "error" to "Validation failed",
+                "issues" to errors,
+            )
+
+        return ResponseEntity(errorBody, headers, HttpStatus.BAD_REQUEST)
+    }
 
     @ExceptionHandler(VehicleIsAlreadyRegisteredException::class)
     fun handleVehicleIsAlreadyRegisteredException(
