@@ -11,7 +11,7 @@ import jakarta.validation.constraints.PositiveOrZero
 data class RegisterVehicleRequest(
     @field:NotBlank(message = "Plate is required")
     @field:Pattern(
-        regexp = "^[A-Z]{3}[0-9][A-Z][0-9]{2}|[A-Z]{3}[0-9]{4}$",
+        regexp = "^[A-Z]{3}-[0-9][A-Z][0-9]{2}|[A-Z]{3}-[0-9]{4}$",
         message = "Invalid plate format",
     )
     val plate: String,

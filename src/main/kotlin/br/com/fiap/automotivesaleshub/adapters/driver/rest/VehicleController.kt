@@ -1,18 +1,17 @@
 package br.com.fiap.automotivesaleshub.adapters.driver.rest
 
+import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.PurchaseVehicleRequest
 import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.RegisterVehicleRequest
 import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.UpdateVehicleRequest
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.PurchaseVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.RegisterVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.UpdateVehicleDriverPort
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.PurchaseVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.PurchaseVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.RegisterVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.UpdateVehicleOutput
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -47,8 +46,8 @@ class VehicleController(
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Transactional
     fun purchaseVehicle(
-        @Validated @RequestBody input: PurchaseVehicleInput
+        @Valid @RequestBody request: PurchaseVehicleRequest
     ): PurchaseVehicleOutput {
-        return purchaseVehicleDriverPort.execute(input)
+        return purchaseVehicleDriverPort.execute(request.toInput())
     }
 }
