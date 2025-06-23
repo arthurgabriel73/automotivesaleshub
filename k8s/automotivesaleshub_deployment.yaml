@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: automotivesaleshub-deployment
+  labels:
+    app: automotivesaleshub-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: automotivesaleshub-app
+  template:
+    metadata:
+      labels:
+        app: automotivesaleshub-app
+    spec:
+      containers:
+        - name: automotivesaleshub-app
+          image: arthurgabriel73/automotivesaleshub:1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATASOURCE_URL
+              value: postgres-db-automotivesaleshub-service
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_SALES_HUB_DATABASE
+            - name: AUTOMOTIVESALES_SERVICE_URL
+              value: "http://automotivesalesservice-app-service:8081"
+          resources:
+            requests:
+              cpu: "550m"
+            limits:
+              cpu: "800m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: automotivesaleshub-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: automotivesaleshub-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
