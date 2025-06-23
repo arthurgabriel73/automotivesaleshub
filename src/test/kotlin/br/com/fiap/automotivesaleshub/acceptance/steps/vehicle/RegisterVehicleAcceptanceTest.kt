@@ -1,9 +1,11 @@
 package br.com.fiap.automotivesaleshub.acceptance.steps.vehicle
 
 import br.com.fiap.automotivesaleshub.adapters.driven.api.VehicleSalesServiceApi
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.GenerateQRCodeResponse
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.NotifyPaymentResponse
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.SaveVehicleResponse
 import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.UpdateVehicleResponse
+import br.com.fiap.automotivesaleshub.adapters.driven.api.paymentService.PaymentServiceApi
 import com.ninjasquad.springmockk.MockkBean
 import io.cucumber.java.Before
 import io.cucumber.java.en.Given
@@ -32,6 +34,7 @@ class RegisterVehicleAcceptanceTest {
 
     @Autowired private lateinit var testRestTemplate: TestRestTemplate
     @MockkBean lateinit var vehicleSalesServiceApi: VehicleSalesServiceApi
+    @MockkBean lateinit var paymentServiceApi: PaymentServiceApi
 
     private lateinit var response: ResponseEntity<String>
     private lateinit var requestInput: Map<String, Any>
@@ -55,6 +58,11 @@ class RegisterVehicleAcceptanceTest {
         coEvery { vehicleSalesServiceApi.notifyPayment(any()) } coAnswers
             {
                 NotifyPaymentResponse(result = "Payment notification sent")
+            }
+
+        coEvery { paymentServiceApi.generateQRCode(any()) } coAnswers
+            {
+                GenerateQRCodeResponse("mocked_qr_code")
             }
     }
 
