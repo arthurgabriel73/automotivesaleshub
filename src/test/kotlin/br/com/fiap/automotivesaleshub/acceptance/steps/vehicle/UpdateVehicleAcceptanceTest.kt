@@ -7,14 +7,11 @@ import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.util.*
 
@@ -30,10 +27,6 @@ class UpdateVehicleAcceptanceTest {
     private lateinit var requestInput: Map<String, Any>
     private lateinit var vehicleId: String
 
-    companion object {
-        @Container @ServiceConnection val postgres = PostgreSQLContainer("postgres:16.3")
-    }
-
     @Given("the admin have registered a vehicle in the system")
     fun `the admin have registered a vehicle in the system`() {
         val input =
@@ -45,7 +38,7 @@ class UpdateVehicleAcceptanceTest {
                 "yearModel" to "2021",
                 "kilometers" to 15000,
                 "color" to "Red",
-                "plate" to "ABC-1234",
+                "plate" to "ABC-1A34",
                 "price" to 30000L,
                 "priceCurrency" to "BRL",
                 "status" to "AVAILABLE",
@@ -111,6 +104,7 @@ class UpdateVehicleAcceptanceTest {
 
     @Then("the vehicle should be updated successfully")
     fun `the vehicle should be updated successfully`() {
+        response.body shouldBe "{\"vehicleId\":\"$vehicleId\"}"
         response.statusCode shouldBe HttpStatus.OK
     }
 

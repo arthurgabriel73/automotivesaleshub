@@ -89,7 +89,6 @@ Para rodar os testes, você pode utilizar o comando:
 
 ```bash
 ./gradlew clean test koverHtmlReport
-./gradlew clean runBDDTests
 ```
 
 Os demais cenários estão disponíveis no diretório `src/test/resources/features`.

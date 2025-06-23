@@ -11,12 +11,9 @@ import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.time.Instant
 import java.util.*
@@ -33,10 +30,6 @@ class PurchaseVehicleAcceptanceTest {
     private lateinit var response: ResponseEntity<String>
     private lateinit var requestInput: Map<String, Any>
     private var vehicleId: VehicleId = VehicleId(UUID.randomUUID())
-
-    companion object {
-        @Container @ServiceConnection val postgres = PostgreSQLContainer("postgres:16.3")
-    }
 
     @Given("the system has a valid vehicle available for purchase")
     fun `the system has a valid vehicle available for purchase`() {
@@ -89,15 +82,15 @@ class PurchaseVehicleAcceptanceTest {
                 specifications =
                     Specifications(
                         make = "Fiat",
-                        model = "Argo",
-                        version = "HGT",
+                        model = "Mobi",
+                        version = "Way",
                         yearFabrication = "2020",
                         yearModel = "2021",
                         kilometers = 0,
-                        color = "Black",
+                        color = "Red",
                     ),
-                plate = Plate(plate = "HBD-8787"),
-                price = Price(amount = 44000L, currency = PriceCurrency.BRL),
+                plate = Plate(plate = "AAA-9787"),
+                price = Price(amount = 3400000L, currency = PriceCurrency.BRL),
                 status = VehicleStatus.SOLD,
                 createdAt = Instant.now(),
             )

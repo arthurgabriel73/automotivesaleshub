@@ -31,6 +31,7 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
                 mapOf(
                     "path" to listOf(it.field),
                     "message" to (it.defaultMessage ?: "Invalid argument"),
+                    "rejectedValue" to it.rejectedValue,
                 )
             }
 

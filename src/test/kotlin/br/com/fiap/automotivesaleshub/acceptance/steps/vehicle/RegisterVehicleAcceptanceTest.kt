@@ -1,11 +1,19 @@
 package br.com.fiap.automotivesaleshub.acceptance.steps.vehicle
 
+import br.com.fiap.automotivesaleshub.adapters.driven.api.VehicleSalesServiceApi
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.GenerateQRCodeResponse
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.NotifyPaymentResponse
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.SaveVehicleResponse
+import br.com.fiap.automotivesaleshub.adapters.driven.api.dto.response.UpdateVehicleResponse
+import br.com.fiap.automotivesaleshub.adapters.driven.api.paymentService.PaymentServiceApi
+import com.ninjasquad.springmockk.MockkBean
 import io.cucumber.java.Before
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.cucumber.spring.CucumberContextConfiguration
 import io.kotest.matchers.shouldBe
+import io.mockk.coEvery
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -25,12 +33,37 @@ class RegisterVehicleAcceptanceTest {
     private val vehiclesUrl = "/v1/vehicles"
 
     @Autowired private lateinit var testRestTemplate: TestRestTemplate
+    @MockkBean lateinit var vehicleSalesServiceApi: VehicleSalesServiceApi
+    @MockkBean lateinit var paymentServiceApi: PaymentServiceApi
 
     private lateinit var response: ResponseEntity<String>
     private lateinit var requestInput: Map<String, Any>
 
     companion object {
         @Container @ServiceConnection val postgres = PostgreSQLContainer("postgres:16.3")
+    }
+
+    @Before
+    fun mockApiCalls() {
+        coEvery { vehicleSalesServiceApi.saveVehicle(any()) } coAnswers
+            {
+                SaveVehicleResponse(result = "Vehicle registration sent")
+            }
+
+        coEvery { vehicleSalesServiceApi.updateVehicle(any()) } coAnswers
+            {
+                UpdateVehicleResponse(result = "Vehicle update sent")
+            }
+
+        coEvery { vehicleSalesServiceApi.notifyPayment(any()) } coAnswers
+            {
+                NotifyPaymentResponse(result = "Payment notification sent")
+            }
+
+        coEvery { paymentServiceApi.generateQRCode(any()) } coAnswers
+            {
+                GenerateQRCodeResponse("mocked_qr_code")
+            }
     }
 
     @Before

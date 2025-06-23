@@ -26,7 +26,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "mockito-core")
+    }
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation(kotlin("test"))
     runtimeOnly("org.postgresql:postgresql")
@@ -43,11 +45,12 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-console-standalone:1.10.2")
     implementation("com.google.zxing:core:3.3.0")
     implementation("com.google.zxing:javase:3.3.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
 }
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
-
-kover { reports { filters { includes { classes("br.com.fiap.automotivesaleshub.core.*") } } } }
 
 allOpen {
     annotation("jakarta.persistence.Entity")
@@ -63,25 +66,4 @@ tasks.withType<Test> {
 tasks.test {
     useJUnitPlatform()
     testLogging { events("skipped", "passed", "failed") }
-}
-
-tasks {
-    val runBDDTests by
-        registering(JavaExec::class) {
-            dependsOn(testClasses)
-            doFirst { println("Running parallel Cucumber tests") }
-            classpath = sourceSets["test"].runtimeClasspath
-            mainClass.set("org.junit.platform.console.ConsoleLauncher")
-            args("--include-engine", "cucumber")
-            args("--details", "tree")
-            args("--scan-classpath")
-
-            systemProperty("cucumber.execution.parallel.enabled", true)
-            systemProperty("cucumber.execution.parallel.config.strategy", "dynamic")
-            systemProperty(
-                "cucumber.plugin",
-                "pretty, summary, timeline:build/reports/timeline, html:build/reports/cucumber.html",
-            )
-            systemProperty("cucumber.publish.quiet", true)
-        }
 }
