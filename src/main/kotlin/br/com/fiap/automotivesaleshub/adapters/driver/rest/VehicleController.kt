@@ -1,17 +1,17 @@
 package br.com.fiap.automotivesaleshub.adapters.driver.rest
 
+import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.PurchaseVehicleRequest
+import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.RegisterVehicleRequest
+import br.com.fiap.automotivesaleshub.adapters.driver.rest.dto.UpdateVehicleRequest
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.PurchaseVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.RegisterVehicleDriverPort
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.UpdateVehicleDriverPort
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.PurchaseVehicleInput
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.RegisterVehicleInput
-import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.input.UpdateVehicleInput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.PurchaseVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.RegisterVehicleOutput
 import br.com.fiap.automotivesaleshub.core.application.ports.driver.models.output.UpdateVehicleOutput
 import jakarta.transaction.Transactional
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -26,9 +26,9 @@ class VehicleController(
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     fun registerVehicle(
-        @Validated @RequestBody input: RegisterVehicleInput
+        @Valid @RequestBody request: RegisterVehicleRequest
     ): RegisterVehicleOutput {
-        return registerVehicleDriverPort.execute(input)
+        return registerVehicleDriverPort.execute(request.toInput())
     }
 
     @PutMapping("/{vehicleId}")
@@ -36,18 +36,18 @@ class VehicleController(
     @Transactional
     fun updateVehicle(
         @PathVariable(name = "vehicleId", required = true) vehicleId: String,
-        @Validated @RequestBody input: UpdateVehicleInput,
+        @Valid @RequestBody request: UpdateVehicleRequest,
     ): UpdateVehicleOutput {
         // TODO: get ID from path variable only
-        return updateVehicleDriverPort.execute(input)
+        return updateVehicleDriverPort.execute(request.toInput())
     }
 
     @PostMapping("/purchase")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Transactional
     fun purchaseVehicle(
-        @Validated @RequestBody input: PurchaseVehicleInput
+        @Valid @RequestBody request: PurchaseVehicleRequest
     ): PurchaseVehicleOutput {
-        return purchaseVehicleDriverPort.execute(input)
+        return purchaseVehicleDriverPort.execute(request.toInput())
     }
 }
