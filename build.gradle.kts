@@ -46,6 +46,8 @@ dependencies {
 
 kotlin { compilerOptions { freeCompilerArgs.addAll("-Xjsr305=strict") } }
 
+kover { reports { filters { includes { classes("br.com.fiap.automotivesaleshub.core.*") } } } }
+
 allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")

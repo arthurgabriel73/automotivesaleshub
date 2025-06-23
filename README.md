@@ -5,6 +5,8 @@
 Este projeto é uma API que gerencia o estoque e vendas de veículos. Ele permite o cadastro de veículos, controle de
 estoque, vendas e pagamentos.
 
+### Apresentação: https://youtu.be/3-hP1oaoekg
+
 ## Sumário
 
 * [Tecnologias](#tecnologias)
@@ -83,6 +85,13 @@ Feature: Payment Update
     Then the system should reject the payment update with a not found error
 ```
 
+Para rodar os testes, você pode utilizar o comando:
+
+```bash
+./gradlew clean test koverHtmlReport
+./gradlew clean runBDDTests
+```
+
 Os demais cenários estão disponíveis no diretório `src/test/resources/features`.
 
 ## Arquitetura
@@ -103,15 +112,3 @@ kubectl apply -f automotivesalesservice_deployment.yaml
 kubectl apply -f metrics.yaml
 kubectl apply -f app_hpa.yaml
 ```
-
-## Acessando a API
-
-[Voltar ao topo](#automotivesaleshub)
-
-## Dados de API
-
-[Voltar ao topo](#automotivesaleshub)
-
-## Cobertura de Testes
-
-[Voltar ao topo](#automotivesaleshub)
