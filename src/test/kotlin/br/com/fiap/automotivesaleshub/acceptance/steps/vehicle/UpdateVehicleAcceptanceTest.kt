@@ -45,7 +45,7 @@ class UpdateVehicleAcceptanceTest {
                 "yearModel" to "2021",
                 "kilometers" to 15000,
                 "color" to "Red",
-                "plate" to "ABC-1234",
+                "plate" to "ABC-1A34",
                 "price" to 30000L,
                 "priceCurrency" to "BRL",
                 "status" to "AVAILABLE",
@@ -111,6 +111,7 @@ class UpdateVehicleAcceptanceTest {
 
     @Then("the vehicle should be updated successfully")
     fun `the vehicle should be updated successfully`() {
+        response.body shouldBe "{\"vehicleId\":\"$vehicleId\"}"
         response.statusCode shouldBe HttpStatus.OK
     }
 

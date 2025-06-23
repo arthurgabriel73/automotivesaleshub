@@ -89,15 +89,15 @@ class PurchaseVehicleAcceptanceTest {
                 specifications =
                     Specifications(
                         make = "Fiat",
-                        model = "Argo",
-                        version = "HGT",
+                        model = "Mobi",
+                        version = "Way",
                         yearFabrication = "2020",
                         yearModel = "2021",
                         kilometers = 0,
-                        color = "Black",
+                        color = "Red",
                     ),
-                plate = Plate(plate = "HBD-8787"),
-                price = Price(amount = 44000L, currency = PriceCurrency.BRL),
+                plate = Plate(plate = "AAA-9787"),
+                price = Price(amount = 3400000L, currency = PriceCurrency.BRL),
                 status = VehicleStatus.SOLD,
                 createdAt = Instant.now(),
             )
